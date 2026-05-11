@@ -4,6 +4,66 @@
   
   
   <entry>
+    <title>Java 进阶：反射机制——深度剖析框架的“灵魂”</title>
+    <link href="/2026/05/11/Java%E8%BF%9B%E9%98%B6%EF%BC%9A%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%90/"/>
+    <url>/2026/05/11/Java%E8%BF%9B%E9%98%B6%EF%BC%9A%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%90/</url>
+    
+    <content type="html"><![CDATA[<p>在 Java 的世界里，如果你想从“会写代码”进化到“能看懂框架”，<strong>反射（Reflection）</strong> 是你必须掌握的核心技术。无论是 Spring 的依赖注入，还是 MyBatis 的 ORM 映射，其底层逻辑都离不开反射。</p><p>本文将带你揭开反射的神秘面纱：它是什么？怎么用？以及为什么它被称为框架的“灵魂”。</p><h2 id="一、-什么是反射？"><a href="#一、-什么是反射？" class="headerlink" title="一、 什么是反射？"></a>一、 什么是反射？</h2><p>通常情况下，我们编写 Java 代码是<strong>静态</strong>的：先写好 <code>.java</code> 文件，编译成 <code>.class</code>，然后运行。</p><p><strong>反射（Reflection）</strong> 则赋予了程序在<strong>运行时（Runtime）</strong> 进行“自我检查”和“自我修改”的能力。通过反射，程序可以：</p><ul><li>在运行时知道任何一个对象所属的类。</li><li>在运行时构造任何一个类的对象。</li><li>在运行时获取和调用任何一个类的成员变量和方法（甚至是私有的）。</li></ul><hr><h2 id="二、-获取-Class-对象的三个招式"><a href="#二、-获取-Class-对象的三个招式" class="headerlink" title="二、 获取 Class 对象的三个招式"></a>二、 获取 Class 对象的三个招式</h2><p>在反射的世界里，<code>java.lang.Class</code> 是所有操作的入口。获取它有三种常见方式：</p><ol><li><p><strong>对象.getClass()</strong>：已经有了实例对象。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">User</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>();<br><span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> user.getClass();<br><br></code></pre></td></tr></table></figure></li><li><p><strong>类名.class</strong>：最安全、性能最高（建议使用）。</p></li></ol><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> User.class;<br><br></code></pre></td></tr></table></figure><ol start="3"><li><strong>Class.forName(“全类名”)</strong>：最灵活，常用于配置文件加载。</li></ol><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;com.example.model.User&quot;</span>);<br><br></code></pre></td></tr></table></figure><hr><h2 id="三、-反射能做什么？（实战演练）"><a href="#三、-反射能做什么？（实战演练）" class="headerlink" title="三、 反射能做什么？（实战演练）"></a>三、 反射能做什么？（实战演练）</h2><h3 id="1-暴力访问私有属性"><a href="#1-暴力访问私有属性" class="headerlink" title="1. 暴力访问私有属性"></a>1. 暴力访问私有属性</h3><p>反射可以打破封装性的限制（虽然不建议在业务逻辑中滥用）。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> User.class;<br><span class="hljs-type">User</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> (User) clazz.getDeclaredConstructor().newInstance();<br><br><span class="hljs-comment">// 获取私有属性 name</span><br><span class="hljs-type">Field</span> <span class="hljs-variable">field</span> <span class="hljs-operator">=</span> clazz.getDeclaredField(<span class="hljs-string">&quot;name&quot;</span>);<br><span class="hljs-comment">// 关键：解除私有检查</span><br>field.setAccessible(<span class="hljs-literal">true</span>); <br>field.set(user, <span class="hljs-string">&quot;HouWenQing&quot;</span>);<br><br></code></pre></td></tr></table></figure><h3 id="2-动态执行方法"><a href="#2-动态执行方法" class="headerlink" title="2. 动态执行方法"></a>2. 动态执行方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> clazz.getDeclaredMethod(<span class="hljs-string">&quot;sayHello&quot;</span>, String.class);<br>method.invoke(user, <span class="hljs-string">&quot;Hello Reflection!&quot;</span>);<br><br></code></pre></td></tr></table></figure><hr><h2 id="四、-为什么框架离不开反射？"><a href="#四、-为什么框架离不开反射？" class="headerlink" title="四、 为什么框架离不开反射？"></a>四、 为什么框架离不开反射？</h2><p>设想一下 <strong>Spring Boot</strong> 的工作原理：<br>当你在类上加上 <code>@Service</code> 或 <code>@RestController</code> 注解时，Spring 并不认识你的类名。它是通过<strong>扫描包路径</strong>，利用反射读取你的类信息，然后动态地创建对象并注入到容器中的。</p><p><strong>没有反射，就没有配置化，也就没有了现代 Java 生态。</strong></p><hr><h2 id="五、-反射的代价（硬币的两面）"><a href="#五、-反射的代价（硬币的两面）" class="headerlink" title="五、 反射的代价（硬币的两面）"></a>五、 反射的代价（硬币的两面）</h2><p>虽然反射强大，但它也有明显的缺点：</p><ol><li><strong>性能开销</strong>：反射涉及类型动态解析，比直接调用代码要慢。</li><li><strong>安全问题</strong>：它可以访问私有成员，可能会破坏类的内部逻辑。</li><li><strong>代码维护难</strong>：反射代码通常比直接调用更难阅读和调试。</li></ol><h2 id="六、-总结"><a href="#六、-总结" class="headerlink" title="六、 总结"></a>六、 总结</h2><p>反射是 Java 提供的“后门”，它让程序变得极具灵活性。作为开发者，我们：</p><ul><li><strong>理解它</strong>：为了读懂 Spring&#x2F;MyBatis 等框架源码。</li><li><strong>慎用它</strong>：在编写普通业务代码时，优先考虑多态和设计模式，而非反射。</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java</tag>
+      
+      <tag>反射</tag>
+      
+      <tag>Spring Boot</tag>
+      
+      <tag>进阶</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Java 进阶：匿名内部类（Anonymous Inner Class）的使用场景详解</title>
+    <link href="/2026/05/11/Java%E8%BF%9B%E9%98%B6%EF%BC%9A%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E8%AF%A6%E8%A7%A3/"/>
+    <url>/2026/05/11/Java%E8%BF%9B%E9%98%B6%EF%BC%9A%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E8%AF%A6%E8%A7%A3/</url>
+    
+    <content type="html"><![CDATA[<p>在 Java 开发中，<strong>匿名内部类</strong>是一种非常实用的特性。它允许我们在声明一个类的同时将其实例化。当我们只需要某个类的一个实例，且该类不需要在其他地方重复使用时，匿名内部类是减少冗余代码、提高开发效率的神器。</p><p>本文将深入探讨匿名内部类的核心使用场景，并对比其在现代 Java（Lambda）背景下的地位。</p><h2 id="一、-核心概念"><a href="#一、-核心概念" class="headerlink" title="一、 核心概念"></a>一、 核心概念</h2><p>匿名内部类本质上是一个<strong>没有名字的局部内部类</strong>。它隐含地继承了一个父类或者实现了一个接口。</p><p><strong>它的语法结构如下：</strong></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">new</span> 父类/接口() &#123;<br>    <span class="hljs-comment">// 重写方法</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// 实现逻辑</span><br>    &#125;<br>&#125;;<br><br></code></pre></td></tr></table></figure><hr><h2 id="二、-三大典型使用场景"><a href="#二、-三大典型使用场景" class="headerlink" title="二、 三大典型使用场景"></a>二、 三大典型使用场景</h2><h3 id="1-临时开启多线程（实现-Runnable）"><a href="#1-临时开启多线程（实现-Runnable）" class="headerlink" title="1. 临时开启多线程（实现 Runnable）"></a>1. 临时开启多线程（实现 Runnable）</h3><p>在不需要定义复杂的线程逻辑时，匿名内部类可以让我们在 <code>new Thread</code> 的同时直接写好运行逻辑，而不需要单独写一个实现类。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Runnable</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;子线程任务正在执行...&quot;</span>);<br>    &#125;<br>&#125;).start();<br><br></code></pre></td></tr></table></figure><h3 id="2-集合自定义排序（实现-Comparator）"><a href="#2-集合自定义排序（实现-Comparator）" class="headerlink" title="2. 集合自定义排序（实现 Comparator）"></a>2. 集合自定义排序（实现 Comparator）</h3><p>在对 List 进行排序时，我们往往需要根据特定的业务规则（如按字符串长度、按对象某个属性值）进行比较。这时候传入一个匿名的 <code>Comparator</code> 是最常见的做法。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java">List&lt;String&gt; list = Arrays.asList(<span class="hljs-string">&quot;Apple&quot;</span>, <span class="hljs-string">&quot;Banana&quot;</span>, <span class="hljs-string">&quot;Pear&quot;</span>);<br><br>Collections.sort(list, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Comparator</span>&lt;String&gt;() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compare</span><span class="hljs-params">(String s1, String s2)</span> &#123;<br>        <span class="hljs-keyword">return</span> s1.length() - s2.length(); <span class="hljs-comment">// 按长度升序排列</span><br>    &#125;<br>&#125;);<br><br></code></pre></td></tr></table></figure><h3 id="3-事件监听与回调机制（Event-Listeners）"><a href="#3-事件监听与回调机制（Event-Listeners）" class="headerlink" title="3. 事件监听与回调机制（Event Listeners）"></a>3. 事件监听与回调机制（Event Listeners）</h3><p>在桌面应用开发（Swing&#x2F;AWT）或者 Android 开发中，处理按钮点击、鼠标移动等事件时，大量使用匿名内部类来实现回调。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java">button.addActionListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ActionListener</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">actionPerformed</span><span class="hljs-params">(ActionEvent e)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;用户触发了点击事件！&quot;</span>);<br>    &#125;<br>&#125;);<br><br></code></pre></td></tr></table></figure><hr><h2 id="三、-匿名内部类-vs-Lambda-表达式"><a href="#三、-匿名内部类-vs-Lambda-表达式" class="headerlink" title="三、 匿名内部类 vs Lambda 表达式"></a>三、 匿名内部类 vs Lambda 表达式</h2><p>在 Java 8 之后，Lambda 表达式的出现让代码更加简洁。对于<strong>只有一个抽象方法</strong>的接口（函数式接口），我们现在通常写成 Lambda 形式：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 使用 Lambda 简化后的排序</span><br>Collections.sort(list, (s1, s2) -&gt; s1.length() - s2.length());<br><br></code></pre></td></tr></table></figure><p><strong>但是，在以下场景中，匿名内部类依然不可替代：</strong></p><ol><li><strong>接口中有多个抽象方法</strong>：Lambda 只能用于单方法的函数式接口。</li><li><strong>需要重写抽象类的方法</strong>：Lambda 只能用于接口，不能用于抽象类。</li><li><strong>需要在匿名类中定义自己的成员变量或多个方法</strong>。</li></ol><hr><h2 id="四、-总结"><a href="#四、-总结" class="headerlink" title="四、 总结"></a>四、 总结</h2><p>匿名内部类是 Java 语言灵活性的一种体现，它通过“即用即毁”的机制，极大地简化了简单回调和一次性任务的实现。虽然 Lambda 在很多地方取代了它，但理解匿名内部类依然是掌握 Java 内部类体系、多态以及作用域规则（如对局部变量的访问限制）的重要基础。</p><pre><code class="hljs"></code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java</tag>
+      
+      <tag>面向对象</tag>
+      
+      <tag>编程基础</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>面向对象设计：开闭原则 (OCP) 与图表显示系统重构</title>
     <link href="/2026/05/11/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%EF%BC%9A%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99%E4%B8%8E%E5%9B%BE%E8%A1%A8%E7%B3%BB%E7%BB%9F%E9%87%8D%E6%9E%84/"/>
     <url>/2026/05/11/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%EF%BC%9A%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99%E4%B8%8E%E5%9B%BE%E8%A1%A8%E7%B3%BB%E7%BB%9F%E9%87%8D%E6%9E%84/</url>
@@ -20,9 +80,9 @@
     
     <tags>
       
-      <tag>软件工程</tag>
-      
       <tag>Java</tag>
+      
+      <tag>软件工程</tag>
       
       <tag>设计模式</tag>
       
@@ -49,9 +109,9 @@
     
     <tags>
       
-      <tag>软件工程</tag>
-      
       <tag>Java</tag>
+      
+      <tag>软件工程</tag>
       
       <tag>设计模式</tag>
       
