@@ -19,25 +19,24 @@
   <meta name="author" content="侯文卿">
   <meta name="keywords" content="">
   
-    <meta name="description" content="在 Java 的世界里，如果你想从“会写代码”进化到“能看懂框架”，反射（Reflection） 是你必须掌握的核心技术。无论是 Spring 的依赖注入，还是 MyBatis 的 ORM 映射，其底层逻辑都离不开反射。 本文将带你揭开反射的神秘面纱：它是什么？怎么用？以及为什么它被称为框架的“灵魂”。 一、 什么是反射？通常情况下，我们编写 Java 代码是静态的：先写好 .java 文件，编译">
+    <meta name="description" content="在 Java 开发与算法竞赛中，文件的读写与复制是极其高频的操作。今天的“Homework to Blog”任务聚焦于 Java 的 I&#x2F;O 流。 无论是复制简单的文本，还是复制体积庞大的音视频文件，缓冲流（Buffered Stream） 都是提升程序运行效率的核心利器。本文将梳理“文本文件”与“任意文件”复制的最佳实践。 一、 为什么要用缓冲流？在基础的 FileInputStrea">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java 进阶：反射机制——深度剖析框架的“灵魂”">
-<meta property="og:url" content="https://houwenqing431-sketch.github.io/2026/05/11/Java%E8%BF%9B%E9%98%B6%EF%BC%9A%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%90/index.html">
+<meta property="og:title" content="Java I&#x2F;O 实战：高效文件复制的“万能”与“专用”流">
+<meta property="og:url" content="https://houwenqing431-sketch.github.io/2026/05/24/Java-IO%E5%AE%9E%E6%88%98%EF%BC%9A%E9%AB%98%E6%95%88%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6%E7%9A%84%E4%B8%87%E8%83%BD%E4%B8%8E%E4%B8%93%E7%94%A8%E6%B5%81/index.html">
 <meta property="og:site_name" content="祈李的个人博客">
-<meta property="og:description" content="在 Java 的世界里，如果你想从“会写代码”进化到“能看懂框架”，反射（Reflection） 是你必须掌握的核心技术。无论是 Spring 的依赖注入，还是 MyBatis 的 ORM 映射，其底层逻辑都离不开反射。 本文将带你揭开反射的神秘面纱：它是什么？怎么用？以及为什么它被称为框架的“灵魂”。 一、 什么是反射？通常情况下，我们编写 Java 代码是静态的：先写好 .java 文件，编译">
+<meta property="og:description" content="在 Java 开发与算法竞赛中，文件的读写与复制是极其高频的操作。今天的“Homework to Blog”任务聚焦于 Java 的 I&#x2F;O 流。 无论是复制简单的文本，还是复制体积庞大的音视频文件，缓冲流（Buffered Stream） 都是提升程序运行效率的核心利器。本文将梳理“文本文件”与“任意文件”复制的最佳实践。 一、 为什么要用缓冲流？在基础的 FileInputStrea">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-11T13:30:00.000Z">
-<meta property="article:modified_time" content="2026-05-11T11:24:20.350Z">
+<meta property="article:published_time" content="2026-05-24T03:30:00.000Z">
+<meta property="article:modified_time" content="2026-05-24T03:04:57.987Z">
 <meta property="article:author" content="侯文卿">
+<meta property="article:tag" content="IO流">
 <meta property="article:tag" content="Java">
-<meta property="article:tag" content="Spring Boot">
-<meta property="article:tag" content="反射">
-<meta property="article:tag" content="进阶">
+<meta property="article:tag" content="后端开发">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Java 进阶：反射机制——深度剖析框架的“灵魂” - 祈李的个人博客</title>
+  <title>Java I/O 实战：高效文件复制的“万能”与“专用”流 - 祈李的个人博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -306,7 +305,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Java 进阶：反射机制——深度剖析框架的“灵魂”"></span>
+            <span id="subtitle" data-typed-text="Java I/O 实战：高效文件复制的“万能”与“专用”流"></span>
           
         </div>
 
@@ -317,8 +316,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-11 21:30" pubdate>
-          2026年5月11日 晚上
+        <time datetime="2026-05-24 11:30" pubdate>
+          2026年5月24日 中午
         </time>
       </span>
     
@@ -329,7 +328,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          2.4k 字
         
       </span>
     
@@ -340,7 +339,7 @@
         
         
         
-          12 分钟
+          20 分钟
         
       </span>
     
@@ -379,61 +378,39 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Java 进阶：反射机制——深度剖析框架的“灵魂”</h1>
+            <h1 id="seo-header">Java I/O 实战：高效文件复制的“万能”与“专用”流</h1>
             
             
               <div class="markdown-body">
                 
-                <p>在 Java 的世界里，如果你想从“会写代码”进化到“能看懂框架”，<strong>反射（Reflection）</strong> 是你必须掌握的核心技术。无论是 Spring 的依赖注入，还是 MyBatis 的 ORM 映射，其底层逻辑都离不开反射。</p>
-<p>本文将带你揭开反射的神秘面纱：它是什么？怎么用？以及为什么它被称为框架的“灵魂”。</p>
-<h2 id="一、-什么是反射？"><a href="#一、-什么是反射？" class="headerlink" title="一、 什么是反射？"></a>一、 什么是反射？</h2><p>通常情况下，我们编写 Java 代码是<strong>静态</strong>的：先写好 <code>.java</code> 文件，编译成 <code>.class</code>，然后运行。</p>
-<p><strong>反射（Reflection）</strong> 则赋予了程序在<strong>运行时（Runtime）</strong> 进行“自我检查”和“自我修改”的能力。通过反射，程序可以：</p>
-<ul>
-<li>在运行时知道任何一个对象所属的类。</li>
-<li>在运行时构造任何一个类的对象。</li>
-<li>在运行时获取和调用任何一个类的成员变量和方法（甚至是私有的）。</li>
+                <p>在 Java 开发与算法竞赛中，文件的读写与复制是极其高频的操作。今天的“Homework to Blog”任务聚焦于 Java 的 I&#x2F;O 流。</p>
+<p>无论是复制简单的文本，还是复制体积庞大的音视频文件，<strong>缓冲流（Buffered Stream）</strong> 都是提升程序运行效率的核心利器。本文将梳理“文本文件”与“任意文件”复制的最佳实践。</p>
+<h2 id="一、-为什么要用缓冲流？"><a href="#一、-为什么要用缓冲流？" class="headerlink" title="一、 为什么要用缓冲流？"></a>一、 为什么要用缓冲流？</h2><p>在基础的 <code>FileInputStream</code> 或 <code>FileReader</code> 中，程序每次读写通常是直接与硬盘进行交互，速度极慢。</p>
+<p>而<strong>缓冲流</strong>（如 <code>BufferedInputStream</code> 或 <code>BufferedReader</code>）在内存中开辟了一个默认 8KB 的缓冲区。这就好比搬砖：基础流是一块一块地搬，而缓冲流是给你一辆推车，装满一车再批量运送，极大地减少了磁盘 IO 的次数，性能呈指数级飞跃。</p>
+<hr>
+<h2 id="二、-场景一：文本文件复制（最常用专用流）"><a href="#二、-场景一：文本文件复制（最常用专用流）" class="headerlink" title="二、 场景一：文本文件复制（最常用专用流）"></a>二、 场景一：文本文件复制（最常用专用流）</h2><p>如果明确知道你要复制的是纯文本文件（如 <code>.txt</code>, <code>.java</code>, <code>.md</code>, <code>.csv</code>），<strong>字符缓冲流</strong>是绝对的首选。</p>
+<h3 id="1-核心类"><a href="#1-核心类" class="headerlink" title="1. 核心类"></a>1. 核心类</h3><ul>
+<li><code>BufferedReader</code>：字符缓冲输入流。它提供了一个极为好用的 <code>readLine()</code> 方法，可以一次读取一整行文本。</li>
+<li><code>BufferedWriter</code>：字符缓冲输出流。它提供了一个 <code>newLine()</code> 方法，能根据不同操作系统自动生成对应的换行符。</li>
 </ul>
-<hr>
-<h2 id="二、-获取-Class-对象的三个招式"><a href="#二、-获取-Class-对象的三个招式" class="headerlink" title="二、 获取 Class 对象的三个招式"></a>二、 获取 Class 对象的三个招式</h2><p>在反射的世界里，<code>java.lang.Class</code> 是所有操作的入口。获取它有三种常见方式：</p>
-<ol>
-<li><p><strong>对象.getClass()</strong>：已经有了实例对象。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">User</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>();<br><span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> user.getClass();<br><br></code></pre></td></tr></table></figure>
-</li>
-<li><p><strong>类名.class</strong>：最安全、性能最高（建议使用）。</p>
-</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> User.class;<br><br></code></pre></td></tr></table></figure>
-
-
-<ol start="3">
-<li><strong>Class.forName(“全类名”)</strong>：最灵活，常用于配置文件加载。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;com.example.model.User&quot;</span>);<br><br></code></pre></td></tr></table></figure>
-
-
+<h3 id="2-代码实战"><a href="#2-代码实战" class="headerlink" title="2. 代码实战"></a>2. 代码实战</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.io.*;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FileCopyUtil</span> &#123;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 专门用于复制纯文本文件</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">copyTextFile</span><span class="hljs-params">(String srcPath, String destPath)</span> &#123;<br>        <span class="hljs-comment">// 使用 try-with-resources 语法，确保流会被自动关闭</span><br>        <span class="hljs-keyword">try</span> (<br>            <span class="hljs-type">BufferedReader</span> <span class="hljs-variable">br</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedReader</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileReader</span>(srcPath));<br>            <span class="hljs-type">BufferedWriter</span> <span class="hljs-variable">bw</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedWriter</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileWriter</span>(destPath))<br>        ) &#123;<br>            String line;<br>            <span class="hljs-comment">// 一次读取一行文本，直到文件末尾返回 null</span><br>            <span class="hljs-keyword">while</span> ((line = br.readLine()) != <span class="hljs-literal">null</span>) &#123;<br>                bw.write(line);<br>                bw.newLine(); <span class="hljs-comment">// 写入换行符</span><br>            &#125;<br>            System.out.println(<span class="hljs-string">&quot;文本文件复制成功！&quot;</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
 <hr>
-<h2 id="三、-反射能做什么？（实战演练）"><a href="#三、-反射能做什么？（实战演练）" class="headerlink" title="三、 反射能做什么？（实战演练）"></a>三、 反射能做什么？（实战演练）</h2><h3 id="1-暴力访问私有属性"><a href="#1-暴力访问私有属性" class="headerlink" title="1. 暴力访问私有属性"></a>1. 暴力访问私有属性</h3><p>反射可以打破封装性的限制（虽然不建议在业务逻辑中滥用）。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> User.class;<br><span class="hljs-type">User</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> (User) clazz.getDeclaredConstructor().newInstance();<br><br><span class="hljs-comment">// 获取私有属性 name</span><br><span class="hljs-type">Field</span> <span class="hljs-variable">field</span> <span class="hljs-operator">=</span> clazz.getDeclaredField(<span class="hljs-string">&quot;name&quot;</span>);<br><span class="hljs-comment">// 关键：解除私有检查</span><br>field.setAccessible(<span class="hljs-literal">true</span>); <br>field.set(user, <span class="hljs-string">&quot;HouWenQing&quot;</span>);<br><br></code></pre></td></tr></table></figure>
-
-<h3 id="2-动态执行方法"><a href="#2-动态执行方法" class="headerlink" title="2. 动态执行方法"></a>2. 动态执行方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> clazz.getDeclaredMethod(<span class="hljs-string">&quot;sayHello&quot;</span>, String.class);<br>method.invoke(user, <span class="hljs-string">&quot;Hello Reflection!&quot;</span>);<br><br></code></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="四、-为什么框架离不开反射？"><a href="#四、-为什么框架离不开反射？" class="headerlink" title="四、 为什么框架离不开反射？"></a>四、 为什么框架离不开反射？</h2><p>设想一下 <strong>Spring Boot</strong> 的工作原理：<br>当你在类上加上 <code>@Service</code> 或 <code>@RestController</code> 注解时，Spring 并不认识你的类名。它是通过<strong>扫描包路径</strong>，利用反射读取你的类信息，然后动态地创建对象并注入到容器中的。</p>
-<p><strong>没有反射，就没有配置化，也就没有了现代 Java 生态。</strong></p>
-<hr>
-<h2 id="五、-反射的代价（硬币的两面）"><a href="#五、-反射的代价（硬币的两面）" class="headerlink" title="五、 反射的代价（硬币的两面）"></a>五、 反射的代价（硬币的两面）</h2><p>虽然反射强大，但它也有明显的缺点：</p>
-<ol>
-<li><strong>性能开销</strong>：反射涉及类型动态解析，比直接调用代码要慢。</li>
-<li><strong>安全问题</strong>：它可以访问私有成员，可能会破坏类的内部逻辑。</li>
-<li><strong>代码维护难</strong>：反射代码通常比直接调用更难阅读和调试。</li>
-</ol>
-<h2 id="六、-总结"><a href="#六、-总结" class="headerlink" title="六、 总结"></a>六、 总结</h2><p>反射是 Java 提供的“后门”，它让程序变得极具灵活性。作为开发者，我们：</p>
-<ul>
-<li><strong>理解它</strong>：为了读懂 Spring&#x2F;MyBatis 等框架源码。</li>
-<li><strong>慎用它</strong>：在编写普通业务代码时，优先考虑多态和设计模式，而非反射。</li>
+<h2 id="三、-场景二：任意文件复制（万能通用流）"><a href="#三、-场景二：任意文件复制（万能通用流）" class="headerlink" title="三、 场景二：任意文件复制（万能通用流）"></a>三、 场景二：任意文件复制（万能通用流）</h2><p>如果你要复制的是图片 (<code>.png</code>)、视频 (<code>.mp4</code>)、可执行文件 (<code>.exe</code>) 甚至是压缩包，<strong>绝对不能</strong>用字符流（字符编码转换会破坏原本的二进制数据，导致图片打不开或视频黑屏）。</p>
+<p>这时候必须请出“万能复制”工具——<strong>字节缓冲流</strong>。因为计算机底层存储的所有文件，本质上都是由字节（Byte）组成的。</p>
+<h3 id="1-核心类-1"><a href="#1-核心类-1" class="headerlink" title="1. 核心类"></a>1. 核心类</h3><ul>
+<li><code>BufferedInputStream</code>：字节缓冲输入流。</li>
+<li><code>BufferedOutputStream</code>：字节缓冲输出流。</li>
 </ul>
+<h3 id="2-代码实战-1"><a href="#2-代码实战-1" class="headerlink" title="2. 代码实战"></a>2. 代码实战</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.io.*;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FileCopyUtil</span> &#123;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 万能复制：适用于任何类型的文件（含文本、音视频、压缩包等）</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">copyAnyFile</span><span class="hljs-params">(String srcPath, String destPath)</span> &#123;<br>        <span class="hljs-keyword">try</span> (<br>            <span class="hljs-type">BufferedInputStream</span> <span class="hljs-variable">bis</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedInputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(srcPath));<br>            <span class="hljs-type">BufferedOutputStream</span> <span class="hljs-variable">bos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedOutputStream</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(destPath))<br>        ) &#123;<br>            <span class="hljs-comment">// 自定义一个 1KB 的字节数组作为临时中转站</span><br>            <span class="hljs-type">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>            <span class="hljs-type">int</span> len; <br>            <br>            <span class="hljs-comment">// bis.read(buffer) 返回的是每次真实读取到的字节个数，读到末尾返回 -1</span><br>            <span class="hljs-keyword">while</span> ((len = bis.read(buffer)) != -<span class="hljs-number">1</span>) &#123;<br>                <span class="hljs-comment">// 读多少，写多少，防止在文件末尾写入无效的空数据</span><br>                bos.write(buffer, <span class="hljs-number">0</span>, len);<br>            &#125;<br>            System.out.println(<span class="hljs-string">&quot;任意文件（字节流）复制成功！&quot;</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
+<hr>
+<h2 id="四、-总结与避坑指南"><a href="#四、-总结与避坑指南" class="headerlink" title="四、 总结与避坑指南"></a>四、 总结与避坑指南</h2><ol>
+<li><strong>选型口诀</strong>：处理纯文本，首选<strong>字符缓冲流</strong>（按行操作太香了）；处理非文本或未知类型文件，无脑用<strong>字节缓冲流</strong>（万能且绝对安全）。</li>
+<li><strong>资源释放</strong>：务必记得关闭流。强烈推荐使用 Java 7 引入的 <code>try-with-resources</code> 语法（如上述代码所示），它能优雅地自动释放资源，避免内存泄漏和文件被占用的情况。</li>
+<li><strong>性能思考</strong>：在后台开发或处理海量数据时，I&#x2F;O 操作往往是性能瓶颈。熟练掌握缓冲流，是写出高质量、高效率代码的基本功。</li>
+</ol>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey"><br>### 🚀 发布操作指南：<br><span class="hljs-number">1</span>. 打开 Git Bash 终端，进入你的 `myblog` 根目录。<br><span class="hljs-number">2</span>. 输入命令：`hexo <span class="hljs-keyword">new</span> <span class="hljs-string">&quot;Java IO实战：高效文件复制的万能与专用流&quot;</span>`。<br><span class="hljs-number">3</span>. 把上面的 Markdown 内容复制粘贴到新生成的文件中并保存。<br><span class="hljs-number">4</span>. 执行一键发布命令：`hexo clean &amp;&amp; hexo g &amp;&amp; hexo d`。<br><br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -468,11 +445,9 @@
       
         <a href="/tags/Java/" class="print-no-link">#Java</a>
       
-        <a href="/tags/%E5%8F%8D%E5%B0%84/" class="print-no-link">#反射</a>
+        <a href="/tags/IO%E6%B5%81/" class="print-no-link">#IO流</a>
       
-        <a href="/tags/Spring-Boot/" class="print-no-link">#Spring Boot</a>
-      
-        <a href="/tags/%E8%BF%9B%E9%98%B6/" class="print-no-link">#进阶</a>
+        <a href="/tags/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" class="print-no-link">#后端开发</a>
       
     </div>
   
@@ -484,8 +459,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Java 进阶：反射机制——深度剖析框架的“灵魂”</div>
-      <div>https://houwenqing431-sketch.github.io/2026/05/11/Java进阶：反射机制深度剖析/</div>
+      <div>Java I/O 实战：高效文件复制的“万能”与“专用”流</div>
+      <div>https://houwenqing431-sketch.github.io/2026/05/24/Java-IO实战：高效文件复制的万能与专用流/</div>
     </div>
     <div class="license-meta">
       
@@ -497,7 +472,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月11日</div>
+          <div>2026年5月24日</div>
         </div>
       
       
@@ -529,18 +504,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/24/Java-IO%E5%AE%9E%E6%88%98%EF%BC%9A%E9%AB%98%E6%95%88%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6%E7%9A%84%E4%B8%87%E8%83%BD%E4%B8%8E%E4%B8%93%E7%94%A8%E6%B5%81/" title="Java I/O 实战：高效文件复制的“万能”与“专用”流">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Java I/O 实战：高效文件复制的“万能”与“专用”流</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/11/Java%E8%BF%9B%E9%98%B6%EF%BC%9A%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E8%AF%A6%E8%A7%A3/" title="Java 进阶：匿名内部类（Anonymous Inner Class）的使用场景详解">
-                        <span class="hidden-mobile">Java 进阶：匿名内部类（Anonymous Inner Class）的使用场景详解</span>
+                      <a href="/2026/05/11/Java%E8%BF%9B%E9%98%B6%EF%BC%9A%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%90/" title="Java 进阶：反射机制——深度剖析框架的“灵魂”">
+                        <span class="hidden-mobile">Java 进阶：反射机制——深度剖析框架的“灵魂”</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
