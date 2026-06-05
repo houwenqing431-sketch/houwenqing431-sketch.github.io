@@ -27,7 +27,7 @@
 <meta property="og:description" content="在 Java 并发编程的世界里，创建线程是每个后端程序员的必经之路。虽然现代开发中我们更倾向于使用线程池，但深入理解最基础的两种创建线程方式——继承 Thread 类与实现 Runnable 接口，不仅是各大高校面向对象程序设计和操作系统的经典作业题，更是面试中必考的并发基本功。 今天我们就来彻底理清这两种方式的区别，以及在实际开发中到底该如何抉择。  一、 方式一：继承 Thread 类这种方式">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-05T02:30:00.000Z">
-<meta property="article:modified_time" content="2026-06-05T02:34:40.848Z">
+<meta property="article:modified_time" content="2026-06-05T02:38:18.923Z">
 <meta property="article:author" content="侯文卿">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="多线程">
@@ -447,7 +447,7 @@
 <p>📌 <strong>一句话结论：在实际开发中，永远优先选择实现 <code>Runnable</code> 接口（或者更高级的 <code>Callable</code> &#x2F; 线程池）。</strong></p>
 </blockquote>
 <p>继承 <code>Thread</code> 类只适合在写一些极其简单的玩具 Demo 或者测试代码时使用。在真正的商业级后端项目（比如 Spring Boot 异步任务、高并发系统设计）中，面向接口编程、将任务与执行器解耦，才是保证代码扩展性和可维护性的不二法门。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><br><span class="hljs-meta">---</span><br><span class="hljs-meta"></span><br><span class="hljs-meta"></span><br></code></pre></td></tr></table></figure>
+
                 
               </div>
             
