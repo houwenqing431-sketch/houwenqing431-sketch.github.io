@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>hello word</title>
+    <link href="/2026/06/05/hello-word/"/>
+    <url>/2026/06/05/hello-word/</url>
+    
+    <content type="html"><![CDATA[<p><img src="/hello-word/cartoon.jpg" alt="简单の"></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Java多线程探索：继承 Thread 类 VS 实现 Runnable 接口，到底该怎么选？</title>
     <link href="/2026/06/05/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%8E%A2%E7%B4%A2/"/>
     <url>/2026/06/05/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%8E%A2%E7%B4%A2/</url>
@@ -51,9 +64,9 @@
       
       <tag>Java</tag>
       
-      <tag>后端开发</tag>
-      
       <tag>IO流</tag>
+      
+      <tag>后端开发</tag>
       
     </tags>
     
@@ -229,9 +242,9 @@
       
       <tag>Java</tag>
       
-      <tag>设计模式</tag>
-      
       <tag>后端开发</tag>
+      
+      <tag>设计模式</tag>
       
     </tags>
     
