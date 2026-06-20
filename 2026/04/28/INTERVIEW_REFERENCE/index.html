@@ -1,0 +1,1557 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="侯文卿">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Tilias Web Management — 面试参考文档 Spring Boot 3.3.5 + MyBatis + JWT 培训机构后台管理系统 作者：大二，准备暑期实习面试 最后更新：2026-06-20   目录 项目概述 技术栈 系统架构 数据库设计 API 接口文档 核心功能详解 关键设计决策 Bug 修复记录 面试常见问题与回答 项目启动指南   1. 项目概述1.1 一句话描述一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实习项目">
+<meta property="og:url" content="https://houwenqing431-sketch.github.io/2026/04/28/INTERVIEW_REFERENCE/index.html">
+<meta property="og:site_name" content="侯文卿的个人博客">
+<meta property="og:description" content="Tilias Web Management — 面试参考文档 Spring Boot 3.3.5 + MyBatis + JWT 培训机构后台管理系统 作者：大二，准备暑期实习面试 最后更新：2026-06-20   目录 项目概述 技术栈 系统架构 数据库设计 API 接口文档 核心功能详解 关键设计决策 Bug 修复记录 面试常见问题与回答 项目启动指南   1. 项目概述1.1 一句话描述一">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-28T12:48:39.000Z">
+<meta property="article:modified_time" content="2026-06-20T06:42:34.005Z">
+<meta property="article:author" content="侯文卿">
+<meta property="article:tag" content="Javaweb">
+<meta property="article:tag" content="全栈">
+<meta property="article:tag" content="后端开发">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>实习项目 - 侯文卿的个人博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"houwenqing431-sketch.github.io","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>侯文卿的个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="实习项目"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-04-28 20:48" pubdate>
+          2026年4月28日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          19k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          155 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">实习项目</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Tilias-Web-Management-—-面试参考文档"><a href="#Tilias-Web-Management-—-面试参考文档" class="headerlink" title="Tilias Web Management — 面试参考文档"></a>Tilias Web Management — 面试参考文档</h1><blockquote>
+<p>Spring Boot 3.3.5 + MyBatis + JWT 培训机构后台管理系统</p>
+<p>作者：大二，准备暑期实习面试</p>
+<p>最后更新：2026-06-20</p>
+</blockquote>
+<hr>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li><a href="#1-%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%BF%B0">项目概述</a></li>
+<li><a href="#2-%E6%8A%80%E6%9C%AF%E6%A0%88">技术栈</a></li>
+<li><a href="#3-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84">系统架构</a></li>
+<li><a href="#4-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1">数据库设计</a></li>
+<li><a href="#5-api-%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3">API 接口文档</a></li>
+<li><a href="#6-%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E8%AF%A6%E8%A7%A3">核心功能详解</a></li>
+<li><a href="#7-%E5%85%B3%E9%94%AE%E8%AE%BE%E8%AE%A1%E5%86%B3%E7%AD%96">关键设计决策</a></li>
+<li><a href="#8-bug-%E4%BF%AE%E5%A4%8D%E8%AE%B0%E5%BD%95">Bug 修复记录</a></li>
+<li><a href="#9-%E9%9D%A2%E8%AF%95%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E5%9B%9E%E7%AD%94">面试常见问题与回答</a></li>
+<li><a href="#10-%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8%E6%8C%87%E5%8D%97">项目启动指南</a></li>
+</ol>
+<hr>
+<h2 id="1-项目概述"><a href="#1-项目概述" class="headerlink" title="1. 项目概述"></a>1. 项目概述</h2><h3 id="1-1-一句话描述"><a href="#1-1-一句话描述" class="headerlink" title="1.1 一句话描述"></a>1.1 一句话描述</h3><p>一个面向培训机构的 <strong>员工与部门管理后台 API 系统</strong>，支持员工 CRUD、JWT 认证、操作日志 AOP 自动记录、文件上传至阿里云 OSS、以及数据统计报表。</p>
+<h3 id="1-2-业务背景"><a href="#1-2-业务背景" class="headerlink" title="1.2 业务背景"></a>1.2 业务背景</h3><p>培训机构（类似「Tilias」）需要管理内部员工——包括班主任、讲师、学工主管、教研主管、咨询师等角色。管理员需要：</p>
+<ul>
+<li>对部门和员工进行增删改查</li>
+<li>记录每位员工的工作经历（简历）</li>
+<li>查看员工职位分布、性别比例等统计图表</li>
+<li>追踪所有敏感操作（谁、什么时间、做了什么、耗时多久）</li>
+<li>上传员工照片等文件到云端</li>
+</ul>
+<h3 id="1-3-项目定位"><a href="#1-3-项目定位" class="headerlink" title="1.3 项目定位"></a>1.3 项目定位</h3><ul>
+<li><strong>类型</strong>：RESTful API 后端服务（前后端分离架构）</li>
+<li><strong>前端</strong>：独立的 Vue&#x2F;React 项目（本项目不包含）</li>
+<li><strong>数据库</strong>：MySQL 8.x</li>
+<li><strong>部署方式</strong>：Jar 包独立运行（Spring Boot 内嵌 Tomcat）</li>
+</ul>
+<hr>
+<h2 id="2-技术栈"><a href="#2-技术栈" class="headerlink" title="2. 技术栈"></a>2. 技术栈</h2><h3 id="2-1-核心框架"><a href="#2-1-核心框架" class="headerlink" title="2.1 核心框架"></a>2.1 核心框架</h3><table>
+<thead>
+<tr>
+<th>技术</th>
+<th>版本</th>
+<th>用途</th>
+<th>为什么选它</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Spring Boot</strong></td>
+<td>3.3.5</td>
+<td>应用框架</td>
+<td>自动配置、内嵌服务器、生态成熟</td>
+</tr>
+<tr>
+<td><strong>MyBatis</strong></td>
+<td>3.0.3</td>
+<td>ORM</td>
+<td>SQL 可控性高，适合复杂查询；注解 + XML 混合模式</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>8.x</td>
+<td>关系数据库</td>
+<td>业务数据结构化，需要事务支持</td>
+</tr>
+<tr>
+<td><strong>JDK</strong></td>
+<td>17</td>
+<td>运行环境</td>
+<td>LTS 版本，Spring Boot 3.x 最低要求</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-认证与安全"><a href="#2-2-认证与安全" class="headerlink" title="2.2 认证与安全"></a>2.2 认证与安全</h3><table>
+<thead>
+<tr>
+<th>技术</th>
+<th>版本</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>jjwt</strong> (io.jsonwebtoken)</td>
+<td>0.11.5</td>
+<td>JWT 令牌生成与解析</td>
+</tr>
+<tr>
+<td><strong>HandlerInterceptor</strong></td>
+<td>Spring 内置</td>
+<td>请求拦截，校验 token</td>
+</tr>
+<tr>
+<td><strong>ThreadLocal</strong></td>
+<td>JDK 内置</td>
+<td>线程隔离存储当前用户 ID</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-中间件与工具"><a href="#2-3-中间件与工具" class="headerlink" title="2.3 中间件与工具"></a>2.3 中间件与工具</h3><table>
+<thead>
+<tr>
+<th>技术</th>
+<th>版本</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>PageHelper</strong></td>
+<td>1.4.7</td>
+<td>物理分页（自动 COUNT + LIMIT）</td>
+</tr>
+<tr>
+<td><strong>Lombok</strong></td>
+<td>1.18.38</td>
+<td>减少样板代码（@Data, @Slf4j 等）</td>
+</tr>
+<tr>
+<td><strong>Fastjson2</strong></td>
+<td>2.0.32</td>
+<td>JSON 序列化（备用）</td>
+</tr>
+<tr>
+<td><strong>Jackson</strong></td>
+<td>Spring 内置</td>
+<td>主 JSON 序列化（non_null 配置）</td>
+</tr>
+<tr>
+<td><strong>Logback</strong></td>
+<td>Spring 内置</td>
+<td>日志框架（控制台 + 文件滚动）</td>
+</tr>
+<tr>
+<td><strong>Spring AOP</strong></td>
+<td>Spring 内置</td>
+<td>切面编程，操作日志自动记录</td>
+</tr>
+</tbody></table>
+<h3 id="2-4-云服务"><a href="#2-4-云服务" class="headerlink" title="2.4 云服务"></a>2.4 云服务</h3><table>
+<thead>
+<tr>
+<th>技术</th>
+<th>版本</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>阿里云 OSS SDK</strong></td>
+<td>3.18.4</td>
+<td>对象存储，文件上传</td>
+</tr>
+<tr>
+<td><strong>V4 签名</strong></td>
+<td>OSS 内置</td>
+<td>新版 OSS 安全签名机制</td>
+</tr>
+</tbody></table>
+<h3 id="2-5-测试"><a href="#2-5-测试" class="headerlink" title="2.5 测试"></a>2.5 测试</h3><table>
+<thead>
+<tr>
+<th>技术</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>JUnit 5</strong> (spring-boot-starter-test)</td>
+<td>单元测试 + 集成测试</td>
+</tr>
+<tr>
+<td><strong>H2 Database</strong></td>
+<td>测试用内存数据库（MySQL 兼容模式）</td>
+</tr>
+<tr>
+<td><strong>mybatis-spring-boot-starter-test</strong></td>
+<td>MyBatis 测试支持</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-系统架构"><a href="#3-系统架构" class="headerlink" title="3. 系统架构"></a>3. 系统架构</h2><h3 id="3-1-分层架构图"><a href="#3-1-分层架构图" class="headerlink" title="3.1 分层架构图"></a>3.1 分层架构图</h3><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs less">┌─────────────────────────────────────────────────────────┐<br>│                    前端（独立项目）                       │<br>│                  <span class="hljs-selector-tag">Vue</span> / <span class="hljs-selector-tag">React</span> <span class="hljs-selector-tag">SPA</span>                        │<br>└──────────────────────┬──────────────────────────────────┘<br>                       │ <span class="hljs-selector-tag">HTTP</span> + <span class="hljs-selector-tag">JSON</span> (<span class="hljs-attribute">Header</span>: token)<br>                       ▼<br>┌─────────────────────────────────────────────────────────┐<br>│              <span class="hljs-selector-tag">Spring</span> <span class="hljs-selector-tag">Boot</span> <span class="hljs-selector-tag">Application</span>                     │<br>│                                                         │<br>│  ┌─────────────────────────────────────────────────┐   │<br>│  │          <span class="hljs-selector-tag">Interceptor</span> 层（认证拦截）               │   │<br>│  │  <span class="hljs-selector-tag">TokenInterceptor</span>: <span class="hljs-selector-tag">JWT</span> 校验 → <span class="hljs-selector-tag">ThreadLocal</span> 存用户  │   │<br>│  └──────────────────────┬──────────────────────────┘   │<br>│                         ▼                               │<br>│  ┌─────────────────────────────────────────────────┐   │<br>│  │              <span class="hljs-selector-tag">Controller</span> 层（<span class="hljs-number">6</span> 个）                │   │<br>│  │  <span class="hljs-selector-tag">DeptController</span>    <span class="hljs-selector-tag">EmpController</span>                 │   │<br>│  │  <span class="hljs-selector-tag">LoginController</span>   <span class="hljs-selector-tag">ReportController</span>              │   │<br>│  │  <span class="hljs-selector-tag">UploadController</span>  <span class="hljs-selector-tag">LogController</span>                 │   │<br>│  └──────────────────────┬──────────────────────────┘   │<br>│                         ▼                               │<br>│  ┌─────────────────────────────────────────────────┐   │<br>│  │           <span class="hljs-selector-tag">AOP</span> 切面（操作日志）                     │   │<br>│  │  <span class="hljs-selector-tag">LogAspect</span>: @<span class="hljs-selector-tag">Around</span>(<span class="hljs-variable">@LogOperation</span>) → 记录到 <span class="hljs-selector-tag">DB</span>    │   │<br>│  └──────────────────────┬──────────────────────────┘   │<br>│                         ▼                               │<br>│  ┌─────────────────────────────────────────────────┐   │<br>│  │               <span class="hljs-selector-tag">Service</span> 层（<span class="hljs-number">4</span> 个）                  │   │<br>│  │  <span class="hljs-selector-tag">DeptServiceable</span>     <span class="hljs-selector-tag">EmpServiceImpl</span>               │   │<br>│  │  <span class="hljs-selector-tag">EmpLogServiceImpl</span>   <span class="hljs-selector-tag">ReportServiceImpl</span>            │   │<br>│  └──────────────────────┬──────────────────────────┘   │<br>│                         ▼                               │<br>│  ┌─────────────────────────────────────────────────┐   │<br>│  │              <span class="hljs-selector-tag">Mapper</span> 层（<span class="hljs-selector-tag">MyBatis</span>）                 │   │<br>│  │  <span class="hljs-selector-tag">DeptMapper</span>(@注解)    <span class="hljs-selector-tag">EmpMapper</span>(XML+注解)         │   │<br>│  │  <span class="hljs-selector-tag">EmpExprMapper</span>(XML)   <span class="hljs-selector-tag">EmpLogMapper</span>(@注解)         │   │<br>│  │  <span class="hljs-selector-tag">OperateLogMapper</span>(@注解)                          │   │<br>│  └──────────────────────┬──────────────────────────┘   │<br>│                         ▼                               │<br>│  ┌─────────────────────────────────────────────────┐   │<br>│  │              <span class="hljs-selector-tag">MySQL</span> 数据库（<span class="hljs-selector-tag">tilias</span>）               │   │<br>│  │  <span class="hljs-selector-tag">emp</span> / <span class="hljs-selector-tag">dept</span> / <span class="hljs-selector-tag">emp_expr</span> / <span class="hljs-selector-tag">emp_log</span> / <span class="hljs-selector-tag">operate_log</span>   │   │<br>│  └─────────────────────────────────────────────────┘   │<br>└─────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-项目目录结构"><a href="#3-2-项目目录结构" class="headerlink" title="3.2 项目目录结构"></a>3.2 项目目录结构</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-attribute">src</span>/main/java/com/ithwq/<br>├── TiliasWebManagementApplication<span class="hljs-selector-class">.java</span>    ← 启动类<br>├── anno/<br>│   └── LogOperation<span class="hljs-selector-class">.java</span>                 ← 自定义注解（标记需记录日志的方法）<br>├── aop/<br>│   └── LogAspect<span class="hljs-selector-class">.java</span>                    ← AOP 切面（操作日志自动记录）<br>├── config/<br>│   └── WebConfig<span class="hljs-selector-class">.java</span>                    ← 注册 TokenInterceptor<br>├── controller/<br>│   ├── DeptController<span class="hljs-selector-class">.java</span>               ← 部门 CRUD<br>│   ├── EmpController<span class="hljs-selector-class">.java</span>                ← 员工 CRUD<br>│   ├── LoginController<span class="hljs-selector-class">.java</span>              ← 登录认证<br>│   ├── LogController<span class="hljs-selector-class">.java</span>                ← 操作日志查询<br>│   ├── ReportController<span class="hljs-selector-class">.java</span>             ← 统计报表<br>│   └── UploadController<span class="hljs-selector-class">.java</span>             ← 文件上传<br>├── <span class="hljs-attribute">filter</span>/<br>│   └── TokenInterceptor<span class="hljs-selector-class">.java</span>             ← JWT 拦截器<br>├── mapper/<br>│   ├── DeptMapper<span class="hljs-selector-class">.java</span>                   ← 部门数据访问（纯注解 SQL）<br>│   ├── EmpMapper<span class="hljs-selector-class">.java</span>                    ← 员工数据访问（XML + 注解混合）<br>│   ├── EmpExprMapper<span class="hljs-selector-class">.java</span>                ← 工作经历数据访问（XML）<br>│   ├── EmpLogMapper<span class="hljs-selector-class">.java</span>                 ← 员工操作日志（注解 SQL）<br>│   └── OperateLogMapper<span class="hljs-selector-class">.java</span>             ← 系统操作日志（注解 SQL）<br>├── pojo/<br>│   ├── Dept<span class="hljs-selector-class">.java</span>                         ← 部门实体<br>│   ├── Emp<span class="hljs-selector-class">.java</span>                          ← 员工实体（含 exprList）<br>│   ├── EmpExpr<span class="hljs-selector-class">.java</span>                      ← 工作经历实体<br>│   ├── EmpLog<span class="hljs-selector-class">.java</span>                       ← 员工操作日志实体<br>│   ├── EmpQueryParam<span class="hljs-selector-class">.java</span>                ← 员工查询参数<br>│   ├── JobOption<span class="hljs-selector-class">.java</span>                    ← 职位统计 DTO<br>│   ├── LoginInfo<span class="hljs-selector-class">.java</span>                    ← 登录响应 DTO<br>│   ├── LogpageParam<span class="hljs-selector-class">.java</span>                 ← 操作日志查询参数<br>│   ├── OperateLog<span class="hljs-selector-class">.java</span>                   ← 操作日志实体<br>│   ├── PageResult<span class="hljs-selector-class">.java</span>                   ← 通用分页结果<br>│   └── Result<span class="hljs-selector-class">.java</span>                       ← 统一 API 响应<br>├── service/<br>│   ├── DeptService<span class="hljs-selector-class">.java</span>                  ← 部门服务接口<br>│   ├── EmpService<span class="hljs-selector-class">.java</span>                   ← 员工服务接口<br>│   ├── EmpLogService<span class="hljs-selector-class">.java</span>                ← 日志服务接口<br>│   ├── ReportService<span class="hljs-selector-class">.java</span>                ← 报表服务接口<br>│   └── impl/<br>│       ├── DeptServiceable<span class="hljs-selector-class">.java</span>          ← 部门服务实现<br>│       ├── EmpServiceImpl<span class="hljs-selector-class">.java</span>           ← 员工服务实现（最复杂）<br>│       ├── EmpLogServiceImpl<span class="hljs-selector-class">.java</span>        ← 日志服务实现（独立事务）<br>│       └── ReportServiceImpl<span class="hljs-selector-class">.java</span>        ← 报表服务实现<br>└── utils/<br>    ├── AliyunOSSOperator<span class="hljs-selector-class">.java</span>            ← OSS 上传工具<br>    ├── AliyunOSSProperties<span class="hljs-selector-class">.java</span>          ← OSS 配置绑定<br>    ├── CurrentHolder<span class="hljs-selector-class">.java</span>                ← ThreadLocal 用户持有者<br>    └── JwtUtils<span class="hljs-selector-class">.java</span>                     ← JWT 工具类<br><br><span class="hljs-attribute">src</span>/main/resources/<br>├── application<span class="hljs-selector-class">.yaml</span>                      ← 主配置文件<br>├── logback-spring<span class="hljs-selector-class">.xml</span>                    ← 日志配置<br>├── static/upload<span class="hljs-selector-class">.html</span>                    ← 文件上传测试页<br>└── com/ithwq/mapper/<br>    ├── EmpMapper<span class="hljs-selector-class">.xml</span>                     ← Emp MyBatis XML<br>    └── EmpExprMapper<span class="hljs-selector-class">.xml</span>                 ← EmpExpr MyBatis XML<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-数据库设计"><a href="#4-数据库设计" class="headerlink" title="4. 数据库设计"></a>4. 数据库设计</h2><h3 id="4-1-ER-图"><a href="#4-1-ER-图" class="headerlink" title="4.1 ER 图"></a>4.1 ER 图</h3><figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs excel">┌──────┐       ┌──────┐       ┌──────────┐<br>│ dept │ <span class="hljs-number">1</span>───<span class="hljs-built_in">N</span> │ emp  │ <span class="hljs-number">1</span>───<span class="hljs-built_in">N</span> │ emp_expr │<br>└──────┘       └──────┘       └──────────┘<br>                   │<br>                   │ <span class="hljs-number">1</span>───<span class="hljs-built_in">N</span><br>                   ▼<br>               ┌─────────┐<br>               │ emp_log │<br>               └─────────┘<br><br>┌──────────────┐<br>│ operate_log  │  （独立表，AOP 写入，与 emp 无外键）<br>└──────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-表结构"><a href="#4-2-表结构" class="headerlink" title="4.2 表结构"></a>4.2 表结构</h3><h4 id="dept（部门表）"><a href="#dept（部门表）" class="headerlink" title="dept（部门表）"></a>dept（部门表）</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>INT (PK, AUTO_INCREMENT)</td>
+<td>部门 ID</td>
+</tr>
+<tr>
+<td>name</td>
+<td>VARCHAR</td>
+<td>部门名称</td>
+</tr>
+<tr>
+<td>create_time</td>
+<td>DATETIME</td>
+<td>创建时间</td>
+</tr>
+<tr>
+<td>update_time</td>
+<td>DATETIME</td>
+<td>修改时间</td>
+</tr>
+</tbody></table>
+<h4 id="emp（员工表）"><a href="#emp（员工表）" class="headerlink" title="emp（员工表）"></a>emp（员工表）</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>INT (PK, AUTO_INCREMENT)</td>
+<td>员工 ID</td>
+</tr>
+<tr>
+<td>username</td>
+<td>VARCHAR</td>
+<td>登录用户名</td>
+</tr>
+<tr>
+<td>password</td>
+<td>VARCHAR</td>
+<td>密码</td>
+</tr>
+<tr>
+<td>name</td>
+<td>VARCHAR</td>
+<td>真实姓名</td>
+</tr>
+<tr>
+<td>gender</td>
+<td>TINYINT</td>
+<td>性别（1&#x3D;男, 2&#x3D;女）</td>
+</tr>
+<tr>
+<td>phone</td>
+<td>VARCHAR</td>
+<td>手机号</td>
+</tr>
+<tr>
+<td>job</td>
+<td>TINYINT</td>
+<td>职位编号（1&#x3D;班主任, 2&#x3D;讲师, 3&#x3D;学工主管, 4&#x3D;教研主管, 5&#x3D;咨询师）</td>
+</tr>
+<tr>
+<td>salary</td>
+<td>DECIMAL</td>
+<td>薪资</td>
+</tr>
+<tr>
+<td>image</td>
+<td>VARCHAR</td>
+<td>头像 URL</td>
+</tr>
+<tr>
+<td>entry_date</td>
+<td>DATE</td>
+<td>入职日期</td>
+</tr>
+<tr>
+<td>dept_id</td>
+<td>INT (FK → dept.id)</td>
+<td>所属部门 ID</td>
+</tr>
+<tr>
+<td>create_time</td>
+<td>DATETIME</td>
+<td>创建时间</td>
+</tr>
+<tr>
+<td>update_time</td>
+<td>DATETIME</td>
+<td>修改时间</td>
+</tr>
+</tbody></table>
+<h4 id="emp-expr（工作经历表）"><a href="#emp-expr（工作经历表）" class="headerlink" title="emp_expr（工作经历表）"></a>emp_expr（工作经历表）</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>INT (PK, AUTO_INCREMENT)</td>
+<td>经历 ID</td>
+</tr>
+<tr>
+<td>emp_id</td>
+<td>INT (FK → emp.id)</td>
+<td>所属员工 ID</td>
+</tr>
+<tr>
+<td>begin</td>
+<td>DATE</td>
+<td>开始日期</td>
+</tr>
+<tr>
+<td>end</td>
+<td>DATE</td>
+<td>结束日期</td>
+</tr>
+<tr>
+<td>company</td>
+<td>VARCHAR</td>
+<td>公司名称</td>
+</tr>
+<tr>
+<td>job</td>
+<td>VARCHAR</td>
+<td>职位名称</td>
+</tr>
+</tbody></table>
+<h4 id="emp-log（员工操作日志表）"><a href="#emp-log（员工操作日志表）" class="headerlink" title="emp_log（员工操作日志表）"></a>emp_log（员工操作日志表）</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>INT (PK, AUTO_INCREMENT)</td>
+<td>日志 ID</td>
+</tr>
+<tr>
+<td>operate_time</td>
+<td>DATETIME</td>
+<td>操作时间</td>
+</tr>
+<tr>
+<td>info</td>
+<td>VARCHAR</td>
+<td>操作描述</td>
+</tr>
+</tbody></table>
+<h4 id="operate-log（系统操作日志表，AOP-写入）"><a href="#operate-log（系统操作日志表，AOP-写入）" class="headerlink" title="operate_log（系统操作日志表，AOP 写入）"></a>operate_log（系统操作日志表，AOP 写入）</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>INT (PK, AUTO_INCREMENT)</td>
+<td>日志 ID</td>
+</tr>
+<tr>
+<td>operate_emp_id</td>
+<td>INT</td>
+<td>操作人 ID</td>
+</tr>
+<tr>
+<td>operate_time</td>
+<td>DATETIME</td>
+<td>操作时间</td>
+</tr>
+<tr>
+<td>class_name</td>
+<td>VARCHAR</td>
+<td>类全名</td>
+</tr>
+<tr>
+<td>method_name</td>
+<td>VARCHAR</td>
+<td>方法名</td>
+</tr>
+<tr>
+<td>method_params</td>
+<td>VARCHAR</td>
+<td>方法参数</td>
+</tr>
+<tr>
+<td>return_value</td>
+<td>VARCHAR</td>
+<td>返回值</td>
+</tr>
+<tr>
+<td>cost_time</td>
+<td>BIGINT</td>
+<td>执行耗时（毫秒）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="5-API-接口文档"><a href="#5-API-接口文档" class="headerlink" title="5. API 接口文档"></a>5. API 接口文档</h2><h3 id="5-1-通用说明"><a href="#5-1-通用说明" class="headerlink" title="5.1 通用说明"></a>5.1 通用说明</h3><ul>
+<li><strong>Base URL</strong>：<code>http://localhost:8080</code></li>
+<li><strong>认证方式</strong>：除 <code>/login</code> 外，所有接口需在 Header 中携带 <code>token</code></li>
+<li><strong>统一响应格式</strong>：</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>        <span class="hljs-comment">// 1=成功, 0=失败</span><br>  <span class="hljs-attr">&quot;msg&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span>  <span class="hljs-comment">// 提示信息</span><br>  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><span class="hljs-punctuation">&#125;</span>         <span class="hljs-comment">// 业务数据（可能为 null）</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>分页响应格式</strong>：</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;msg&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;success&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;total&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100</span><span class="hljs-punctuation">,</span>   <span class="hljs-comment">// 总记录数</span><br>    <span class="hljs-attr">&quot;rows&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span>      <span class="hljs-comment">// 当前页数据</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-认证相关"><a href="#5-2-认证相关" class="headerlink" title="5.2 认证相关"></a>5.2 认证相关</h3><h4 id="POST-login-—-登录"><a href="#POST-login-—-登录" class="headerlink" title="POST &#x2F;login — 登录"></a>POST &#x2F;login — 登录</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs css">请求：<br>POST /login<br><span class="hljs-attribute">Content</span>-Type: application/json<br><br>&#123;<br>  &quot;username&quot;: <span class="hljs-string">&quot;admin&quot;</span>,<br>  <span class="hljs-string">&quot;password&quot;</span>: <span class="hljs-string">&quot;123456&quot;</span><br>&#125;<br><br>响应：<br>&#123;<br>  &quot;<span class="hljs-selector-tag">code</span>&quot;: <span class="hljs-number">1</span>,<br>  <span class="hljs-string">&quot;msg&quot;</span>: <span class="hljs-string">&quot;success&quot;</span>,<br>  <span class="hljs-string">&quot;data&quot;</span>: &#123;<br>    &quot;id&quot;: <span class="hljs-number">1</span>,<br>    <span class="hljs-string">&quot;username&quot;</span>: <span class="hljs-string">&quot;admin&quot;</span>,<br>    <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;管理员&quot;</span>,<br>    <span class="hljs-string">&quot;token&quot;</span>: <span class="hljs-string">&quot;eyJhbGciOiJIUzI1NiJ9...&quot;</span><br>  &#125;<br>&#125;<br><br>错误：<br>&#123;<br>  &quot;<span class="hljs-selector-tag">code</span>&quot;: <span class="hljs-number">0</span>,<br>  <span class="hljs-string">&quot;msg&quot;</span>: <span class="hljs-string">&quot;用户或密码错误&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-3-部门管理"><a href="#5-3-部门管理" class="headerlink" title="5.3 部门管理"></a>5.3 部门管理</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+<th>操作日志</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/depts</code></td>
+<td>查询所有部门（按 update_time 倒序）</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/depts/{id}</code></td>
+<td>根据 ID 查询部门</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/depts</code></td>
+<td>新增部门</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/depts</code></td>
+<td>修改部门</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/depts?id={id}</code></td>
+<td>删除部门</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<h3 id="5-4-员工管理"><a href="#5-4-员工管理" class="headerlink" title="5.4 员工管理"></a>5.4 员工管理</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/emps?name=&amp;gender=&amp;begin=&amp;end=&amp;page=&amp;pageSize=</code></td>
+<td>分页查询员工</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/emps/{id}</code></td>
+<td>查询员工详情（含工作经历）</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/emps</code></td>
+<td>新增员工（含工作经历）</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/emps</code></td>
+<td>修改员工</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/emps?ids=1,2,3</code></td>
+<td>批量删除员工（先删经历再删员工）</td>
+</tr>
+</tbody></table>
+<p><strong>查询参数说明</strong>：</p>
+<ul>
+<li><code>name</code>：姓名模糊匹配</li>
+<li><code>gender</code>：性别（1&#x3D;男, 2&#x3D;女）</li>
+<li><code>begin</code>：入职日期起始</li>
+<li><code>end</code>：入职日期截止</li>
+<li><code>page</code>：页码（默认 1）</li>
+<li><code>pageSize</code>：每页条数（默认 10）</li>
+</ul>
+<h3 id="5-5-统计报表"><a href="#5-5-统计报表" class="headerlink" title="5.5 统计报表"></a>5.5 统计报表</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/report/empJobData</code></td>
+<td>各职位员工数量统计</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/report/empGenderData</code></td>
+<td>男&#x2F;女员工数量统计</td>
+</tr>
+</tbody></table>
+<p><strong>职位统计响应示例</strong>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;jobList&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;班主任&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;讲师&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;学工主管&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;教研主管&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;咨询师&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;dataList&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-number">10</span><span class="hljs-punctuation">,</span> <span class="hljs-number">25</span><span class="hljs-punctuation">,</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span> <span class="hljs-number">8</span><span class="hljs-punctuation">]</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-6-操作日志"><a href="#5-6-操作日志" class="headerlink" title="5.6 操作日志"></a>5.6 操作日志</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/log/page?page=&amp;pageSize=</code></td>
+<td>分页查询系统操作日志</td>
+</tr>
+</tbody></table>
+<h3 id="5-7-文件上传"><a href="#5-7-文件上传" class="headerlink" title="5.7 文件上传"></a>5.7 文件上传</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>POST</td>
+<td><code>/upload</code></td>
+<td>上传文件到阿里云 OSS</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Content-Type：<code>multipart/form-data</code></li>
+<li>参数名：<code>file</code></li>
+<li>响应：文件的外网访问 URL</li>
+<li>存储路径：<code>{bucket}/{yyyy}/{MM}/{uuid}.{ext}</code></li>
+</ul>
+<hr>
+<h2 id="6-核心功能详解"><a href="#6-核心功能详解" class="headerlink" title="6. 核心功能详解"></a>6. 核心功能详解</h2><h3 id="6-1-JWT-认证流程"><a href="#6-1-JWT-认证流程" class="headerlink" title="6.1 JWT 认证流程"></a>6.1 JWT 认证流程</h3><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">┌──────────┐     ┌──────────────┐     ┌──────────┐     ┌─────────────┐<br>│  客户端   │     │ LoginController│     │ JwtUtils │     │ EmpMapper   │<br>└────┬─────┘     └──────┬───────┘     └────┬─────┘     └──────┬──────┘<br>     │  POST /<span class="hljs-keyword">login</span>      │                  │                  │<br>     │  &#123;<span class="hljs-keyword">user</span>, pass&#125;     │                  │                  │<br>     │──────────────────▶│                  │                  │<br>     │                   │  <span class="hljs-keyword">login</span>(emp)      │                  │<br>     │                   │─────────────────────────────────────▶│<br>     │                   │                  │  <span class="hljs-keyword">SELECT</span> id,username,<span class="hljs-type">name</span><br>     │                   │                  │  <span class="hljs-keyword">FROM</span> emp <span class="hljs-keyword">WHERE</span> username=?<br>     │                   │                  │  <span class="hljs-keyword">AND</span> <span class="hljs-keyword">password</span>=?<br>     │                   │  Emp (或 <span class="hljs-keyword">null</span>)   │                  │<br>     │                   │◀─────────────────────────────────────│<br>     │                   │                  │                  │<br>     │                   │  如果查到:        │                  │<br>     │                   │  generateToken(   │                  │<br>     │                   │    &#123;id, username&#125; │                  │<br>     │                   │  )               │                  │<br>     │                   │─────────────────▶│                  │<br>     │                   │                  │ JWT(HS256,       │<br>     │                   │                  │  <span class="hljs-number">12</span>h过期)         │<br>     │                   │  token            │                  │<br>     │                   │◀─────────────────│                  │<br>     │                   │                  │                  │<br>     │  &#123;id, <span class="hljs-type">name</span>, token&#125;│                  │                  │<br>     │◀──────────────────│                  │                  │<br>     │                   │                  │                  │<br>     │  后续请求:          │                  │                  │<br>     │  <span class="hljs-keyword">Header</span>: token     │                  │                  │<br>     │──────────────────▶│                  │                  │<br>     │                    ▼                  │                  │<br>     │           TokenInterceptor            │                  │<br>     │           ┌─ 解析 JWT                 │                  │<br>     │           ├─ 提取 id                  │                  │<br>     │           ├─ CurrentHolder.<span class="hljs-keyword">set</span>(id)    │                  │<br>     │           └─ 放行 → Controller        │                  │<br>     │                    │                  │                  │<br>     │           响应后:                      │                  │<br>     │           CurrentHolder.remove()      │                  │<br></code></pre></td></tr></table></figure>
+
+<p><strong>关键代码路径</strong>：</p>
+<ol>
+<li><strong>登录</strong>：<code>LoginController.login()</code> → <code>EmpServiceImpl.login()</code> → <code>EmpMapper.login()</code> → <code>JwtUtils.generateToken()</code></li>
+<li><strong>拦截</strong>：<code>TokenInterceptor.preHandle()</code> → <code>JwtUtils.parseToken()</code> → <code>CurrentHolder.setCurrentId()</code></li>
+<li><strong>清理</strong>：<code>TokenInterceptor.afterCompletion()</code> → <code>CurrentHolder.remove()</code></li>
+</ol>
+<h3 id="6-2-AOP-操作日志"><a href="#6-2-AOP-操作日志" class="headerlink" title="6.2 AOP 操作日志"></a>6.2 AOP 操作日志</h3><p><strong>工作流程</strong>：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs stylus">请求到达 Controller 方法<br>    │<br>    ▼<br>LogAspect<span class="hljs-selector-class">.recordLog</span>()  (@Around)<br>    │<br>    ├─ <span class="hljs-number">1</span>. 记录开始时间: System<span class="hljs-selector-class">.currentTimeMillis</span>()<br>    │<br>    ├─ <span class="hljs-number">2</span>. 执行目标方法: joinPoint<span class="hljs-selector-class">.proceed</span>()<br>    │       │<br>    │       └─ DeptController<span class="hljs-selector-class">.delete</span>() 等 @LogOperation 标注的方法<br>    │<br>    ├─ <span class="hljs-number">3</span>. 计算耗时: currentTime - begin<br>    │<br>    ├─ <span class="hljs-number">4</span>. 构建 OperateLog:<br>    │       operateEmpId  ← CurrentHolder<span class="hljs-selector-class">.getCurrentId</span>()  <span class="hljs-selector-attr">[从 ThreadLocal]</span><br>    │       operateTime   ← LocalDateTime<span class="hljs-selector-class">.now</span>()<br>    │       className     ← joinPoint<span class="hljs-selector-class">.getTarget</span>()<span class="hljs-selector-class">.getClass</span>()<span class="hljs-selector-class">.getName</span>()<br>    │       methodName    ← joinPoint<span class="hljs-selector-class">.getSignature</span>()<span class="hljs-selector-class">.getName</span>()<br>    │       methodParams  ← Arrays<span class="hljs-selector-class">.toString</span>(joinPoint<span class="hljs-selector-class">.getArgs</span>())<br>    │       returnValue   ← result<span class="hljs-selector-class">.toString</span>()<br>    │       costTime      ← 毫秒数<br>    │<br>    └─ <span class="hljs-number">5</span>. operateLogMapper<span class="hljs-selector-class">.insert</span>(operateLog)  <span class="hljs-selector-attr">[写入数据库]</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>设计亮点</strong>：</p>
+<ul>
+<li>通过自定义注解 <code>@LogOperation</code> 声明式标记，零侵入</li>
+<li>操作人 ID 从 ThreadLocal 获取，与业务代码解耦</li>
+<li>记录了完整的审计信息（谁、何时、做了什么、耗时多久）</li>
+</ul>
+<p><strong>使用方式</strong>：<br>只需在方法上加 <code>@LogOperation</code> 注解：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@LogOperation</span><br><span class="hljs-meta">@DeleteMapping</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">delete</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam(value = &quot;id&quot;, required = false)</span> Integer deptId)</span> &#123;<br>    <span class="hljs-comment">// AOP 自动记录此操作</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-3-事务管理"><a href="#6-3-事务管理" class="headerlink" title="6.3 事务管理"></a>6.3 事务管理</h3><p><strong>员工新增（EmpServiceImpl.add()）的事务设计</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">add</span><span class="hljs-params">(Emp emp)</span> &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-comment">// 1. 设置时间戳</span><br>        <span class="hljs-comment">// 2. 默认密码 &quot;123456&quot;</span><br>        <span class="hljs-comment">// 3. 插入员工 → empMapper.insert(emp)</span><br>        <span class="hljs-comment">// 4. 批量插入工作经历 → empExprMapper.insert(exprList)</span><br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        <span class="hljs-comment">// 5. 记录操作日志（REQUIRES_NEW 独立事务）</span><br>        empLogService.insertLog(empLog);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>为什么 EmpLogServiceImpl 使用 <code>@Transactional(propagation = Propagation.REQUIRES_NEW)</code>？</strong></p>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sas">主事务（<span class="hljs-keyword">add</span> 员工）<br>  │<br>  ├─ <span class="hljs-keyword">INSERT</span> emp          ──┐<br>  ├─ <span class="hljs-keyword">INSERT</span> emp_expr       │ 这些在同一个事务中<br>  │                        │<br>  │  如果这里抛异常         │ → 全部回滚<br>  │                        │<br>  └─ finally:              │<br>      <span class="hljs-keyword">insert</span><span class="hljs-meta">Log</span>()          │ ← REQUIRES_NEW：新开事务！<br>         │                 │   主事务回滚 ≠ 日志事务回滚<br>         └─ <span class="hljs-keyword">INSERT</span> emp_log │   日志保证写入 ✅<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 <strong>面试话术</strong>：操作日志不应该因为业务失败而丢失。即使新增员工失败回滚了，我们也要知道「有人尝试过新增员工」。所以用了 <code>REQUIRES_NEW</code> 传播级别——挂起当前事务，新开一个独立事务写日志。</p>
+</blockquote>
+<h3 id="6-4-分页方案"><a href="#6-4-分页方案" class="headerlink" title="6.4 分页方案"></a>6.4 分页方案</h3><p>使用 <strong>PageHelper 物理分页</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 1. 启动分页（PageHelper 通过 ThreadLocal 传递分页参数）</span><br>Page&lt;Emp&gt; pageInfo = PageHelper.startPage(page, pageSize);<br><br><span class="hljs-comment">// 2. 执行查询（PageHelper 自动拦截，改写 SQL）</span><br>List&lt;Emp&gt; rows = empMapper.list(name, gender, begin, end);<br><span class="hljs-comment">// 实际执行了 2 条 SQL：</span><br><span class="hljs-comment">//   SELECT count(0) FROM emp ...       ← 查总数</span><br><span class="hljs-comment">//   SELECT ... FROM emp ... LIMIT ?,?   ← 查当页数据</span><br><br><span class="hljs-comment">// 3. 封装结果</span><br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PageResult</span>&lt;&gt;(pageInfo.getTotal(), rows);<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-5-文件上传（阿里云-OSS）"><a href="#6-5-文件上传（阿里云-OSS）" class="headerlink" title="6.5 文件上传（阿里云 OSS）"></a>6.5 文件上传（阿里云 OSS）</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs stylus">用户上传文件<br>    │<br>    ▼<br>UploadController<span class="hljs-selector-class">.upload</span>(MultipartFile)<br>    │<br>    ▼<br>AliyunOSSOperator<span class="hljs-selector-class">.upload</span>(bytes, filename)<br>    │<br>    ├─ <span class="hljs-number">1</span>. 从环境变量读取 AK/SK（EnvironmentVariableCredentialsProvider）<br>    ├─ <span class="hljs-number">2</span>. 生成日期目录: yyyy/MM<br>    ├─ <span class="hljs-number">3</span>. 提取文件后缀: <span class="hljs-selector-class">.jpg</span>, <span class="hljs-selector-class">.png</span> ...<br>    ├─ <span class="hljs-number">4</span>. 生成唯一文件名: UUID + 后缀<br>    ├─ <span class="hljs-number">5</span>. 配置 V4 签名客户端<br>    ├─ <span class="hljs-number">6</span>. ossClient<span class="hljs-selector-class">.putObject</span>(bucket, <span class="hljs-selector-tag">path</span>, inputStream)<br>    ├─ <span class="hljs-number">7</span>. finally: ossClient<span class="hljs-selector-class">.shutdown</span>()<br>    └─ <span class="hljs-number">8</span>. 返回外网 URL: https:<span class="hljs-comment">//&#123;bucket&#125;.&#123;endpoint&#125;/&#123;path&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>安全措施</strong>：</p>
+<ul>
+<li>AK&#x2F;SK 走环境变量，不硬编码</li>
+<li>V4 签名（新版 OSS 安全标准）</li>
+<li>UUID 防文件名冲突</li>
+<li>finally 确保客户端释放</li>
+</ul>
+<hr>
+<h2 id="7-关键设计决策"><a href="#7-关键设计决策" class="headerlink" title="7. 关键设计决策"></a>7. 关键设计决策</h2><h3 id="7-1-为什么用-MyBatis-而不是-JPA？"><a href="#7-1-为什么用-MyBatis-而不是-JPA？" class="headerlink" title="7.1 为什么用 MyBatis 而不是 JPA？"></a>7.1 为什么用 MyBatis 而不是 JPA？</h3><ul>
+<li>SQL 可控性强——复杂统计查询（职位分布、性别统计）手写 SQL 更直观</li>
+<li>学习价值高——理解 ORM 底层原理</li>
+<li>混合模式——简单 CRUD 用注解，复杂查询用 XML</li>
+</ul>
+<h3 id="7-2-为什么用-ThreadLocal-传递用户信息？"><a href="#7-2-为什么用-ThreadLocal-传递用户信息？" class="headerlink" title="7.2 为什么用 ThreadLocal 传递用户信息？"></a>7.2 为什么用 ThreadLocal 传递用户信息？</h3><ul>
+<li>避免在每个方法签名中传递 <code>userId</code></li>
+<li>请求处理是单线程的，天然隔离</li>
+<li><strong>关键</strong>：必须 <code>finally remove()</code>，否则线程池复用会导致串用户</li>
+</ul>
+<h3 id="7-3-为什么-JWT-密钥不能随机生成？"><a href="#7-3-为什么-JWT-密钥不能随机生成？" class="headerlink" title="7.3 为什么 JWT 密钥不能随机生成？"></a>7.3 为什么 JWT 密钥不能随机生成？</h3><p>原来的代码 <code>Keys.secretKeyFor(HS256)</code> 每次类加载时生成新密钥 → 应用重启后所有已发 token 失效。改为固定密钥（实际项目应从配置中心&#x2F;环境变量读取）。</p>
+<h3 id="7-4-MyBatis-statement-ID-的坑"><a href="#7-4-MyBatis-statement-ID-的坑" class="headerlink" title="7.4 MyBatis statement ID 的坑"></a>7.4 MyBatis statement ID 的坑</h3><p>MyBatis XML 的 <code>&lt;select id=&quot;...&quot;&gt;</code> <strong>严格区分大小写</strong>，必须与 Mapper 接口方法名<strong>逐字一致</strong>。例如：</p>
+<ul>
+<li>接口：<code>genderListMaps()</code> → XML 必须：<code>id=&quot;genderListMaps&quot;</code>（不能写成 <code>GenderlistMaps</code>）</li>
+<li>接口：<code>deleteByIds()</code> → XML 必须：<code>id=&quot;deleteByIds&quot;</code>（不能写成 <code>deleteById</code>）</li>
+</ul>
+<p>否则抛出 <code>BindingException: Invalid bound statement</code>。</p>
+<hr>
+<h2 id="8-Bug-修复记录"><a href="#8-Bug-修复记录" class="headerlink" title="8. Bug 修复记录"></a>8. Bug 修复记录</h2><blockquote>
+<p>💡 面试中如果被问到”你遇到过什么 bug？怎么解决的？”——就讲这些。</p>
+</blockquote>
+<h3 id="Bug-1-EmpExprMapper-deleteByIds-—-Statement-ID-不匹配-🔴"><a href="#Bug-1-EmpExprMapper-deleteByIds-—-Statement-ID-不匹配-🔴" class="headerlink" title="Bug 1: EmpExprMapper.deleteByIds — Statement ID 不匹配 🔴"></a>Bug 1: EmpExprMapper.deleteByIds — Statement ID 不匹配 🔴</h3><p><strong>现象</strong>：批量删除员工时抛出</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">org<span class="hljs-selector-class">.apache</span><span class="hljs-selector-class">.ibatis</span><span class="hljs-selector-class">.binding</span><span class="hljs-selector-class">.BindingException</span>: Invalid bound statement (not found):<br>com<span class="hljs-selector-class">.ithwq</span><span class="hljs-selector-class">.mapper</span><span class="hljs-selector-class">.EmpExprMapper</span>.deleteByIds<br></code></pre></td></tr></table></figure>
+
+<p><strong>原因</strong>：</p>
+<ul>
+<li>接口方法名：<code>deleteByIds</code>（复数）</li>
+<li>XML statement ID：<code>deleteById</code>（单数）</li>
+<li>MyBatis 按方法名精确匹配 → 找不到</li>
+</ul>
+<p><strong>修复</strong>：<code>src/main/resources/com/ithwq/mapper/EmpExprMapper.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- Before --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">delete</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;deleteById&quot;</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- After --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">delete</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;deleteByIds&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Bug-2-EmpExprMapper-XML-SQL-语法错误-🔴"><a href="#Bug-2-EmpExprMapper-XML-SQL-语法错误-🔴" class="headerlink" title="Bug 2: EmpExprMapper XML SQL 语法错误 🔴"></a>Bug 2: EmpExprMapper XML SQL 语法错误 🔴</h3><p><strong>现象</strong>：即使修复了 ID 匹配，SQL 仍然报错。</p>
+<p><strong>原因</strong>：DELETE 语句中 <code>WHERE emp_id = (...)</code> 语法错误，<code>=</code> 不能用于 IN 列表。</p>
+<p><strong>修复</strong>：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- Before --&gt;</span><br>delete from tilias.emp_expr where emp_id =<br><span class="hljs-tag">&lt;<span class="hljs-name">foreach</span> <span class="hljs-attr">collection</span>=<span class="hljs-string">&quot;ids&quot;</span> <span class="hljs-attr">item</span>=<span class="hljs-string">&quot;id&quot;</span> <span class="hljs-attr">separator</span>=<span class="hljs-string">&quot;,&quot;</span> <span class="hljs-attr">open</span>=<span class="hljs-string">&quot;(&quot;</span> <span class="hljs-attr">close</span>=<span class="hljs-string">&quot;)&quot;</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- After --&gt;</span><br>delete from tilias.emp_expr where emp_id in<br><span class="hljs-tag">&lt;<span class="hljs-name">foreach</span> <span class="hljs-attr">collection</span>=<span class="hljs-string">&quot;ids&quot;</span> <span class="hljs-attr">item</span>=<span class="hljs-string">&quot;id&quot;</span> <span class="hljs-attr">separator</span>=<span class="hljs-string">&quot;,&quot;</span> <span class="hljs-attr">open</span>=<span class="hljs-string">&quot;(&quot;</span> <span class="hljs-attr">close</span>=<span class="hljs-string">&quot;)&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Bug-3-EmpMapper-genderListMaps-—-大小写不匹配-🔴"><a href="#Bug-3-EmpMapper-genderListMaps-—-大小写不匹配-🔴" class="headerlink" title="Bug 3: EmpMapper.genderListMaps — 大小写不匹配 🔴"></a>Bug 3: EmpMapper.genderListMaps — 大小写不匹配 🔴</h3><p><strong>现象</strong>：查询性别统计时抛出 <code>BindingException</code>。</p>
+<p><strong>原因</strong>：</p>
+<ul>
+<li>接口：<code>genderListMaps</code>（小写 g）</li>
+<li>XML：<code>GenderlistMaps</code>（大写 G）</li>
+<li>Java 方法名区分大小写</li>
+</ul>
+<p><strong>修复</strong>：<code>EmpMapper.xml</code> 中 <code>id=&quot;GenderlistMaps&quot;</code> → <code>id=&quot;genderListMaps&quot;</code></p>
+<h3 id="Bug-4-JWT-密钥每次重启随机生成-🟡"><a href="#Bug-4-JWT-密钥每次重启随机生成-🟡" class="headerlink" title="Bug 4: JWT 密钥每次重启随机生成 🟡"></a>Bug 4: JWT 密钥每次重启随机生成 🟡</h3><p><strong>现象</strong>：应用重启后，所有已登录用户 token 失效，需重新登录。</p>
+<p><strong>原因</strong>：<code>Keys.secretKeyFor(HS256)</code> 每次调用都生成新密钥。</p>
+<p><strong>修复</strong>：改用固定 Base64 密钥 + <code>Keys.hmacShaKeyFor()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// Before</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">SecretKey</span> <span class="hljs-variable">SECRET_KEY</span> <span class="hljs-operator">=</span> Keys.secretKeyFor(HS256);<br><br><span class="hljs-comment">// After</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">SECRET_KEY_BASE64</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;dGhpcy1pcy1hLWZpeGVkLXNlY3JldC1rZXktZm9yLWp3dC1oMjU2LXRlc3Q=&quot;</span>;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">SecretKey</span> <span class="hljs-variable">SECRET_KEY</span> <span class="hljs-operator">=</span> Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY_BASE64));<br></code></pre></td></tr></table></figure>
+
+<h3 id="Bug-5-System-out-println-替代日志框架-🟢"><a href="#Bug-5-System-out-println-替代日志框架-🟢" class="headerlink" title="Bug 5: System.out.println 替代日志框架 🟢"></a>Bug 5: System.out.println 替代日志框架 🟢</h3><p><strong>问题</strong>：<code>DeptController</code> 中有 5 处 <code>System.out.println()</code>，生产环境不可控。</p>
+<p><strong>修复</strong>：全部替换为 <code>log.info()</code>，使用 Lombok 的 <code>@Slf4j</code> 注解。</p>
+<hr>
+<h2 id="9-面试常见问题与回答"><a href="#9-面试常见问题与回答" class="headerlink" title="9. 面试常见问题与回答"></a>9. 面试常见问题与回答</h2><h3 id="Q1-介绍一下你这个项目？"><a href="#Q1-介绍一下你这个项目？" class="headerlink" title="Q1: 介绍一下你这个项目？"></a>Q1: 介绍一下你这个项目？</h3><blockquote>
+<p>这是一个培训机构员工管理系统后端，基于 Spring Boot 3 + MyBatis + JWT。核心功能包括部门和员工的 CRUD、JWT 登录认证、操作日志 AOP 自动记录、文件上传到阿里云 OSS、以及员工职位和性别统计报表。</p>
+<p>技术栈方面用到了：Spring AOP 做切面日志、PageHelper 做物理分页、ThreadLocal 做请求级用户信息传递、JWT + 拦截器做认证，事务管理用了 REQUIRES_NEW 保证审计日志独立落库。</p>
+<p>这是我大二独立完成的，目前代码量大约 30 个 Java 文件。</p>
+</blockquote>
+<h3 id="Q2-JWT-认证是怎么做的？"><a href="#Q2-JWT-认证是怎么做的？" class="headerlink" title="Q2: JWT 认证是怎么做的？"></a>Q2: JWT 认证是怎么做的？</h3><blockquote>
+<p><strong>生成</strong>：用户 POST <code>/login</code> 提交用户名密码 → <code>EmpMapper.login()</code> 查库 → 如果查到用户，用 <code>JwtUtils.generateToken()</code> 生成 JWT，载荷中放 <code>id</code> 和 <code>username</code>，HS256 签名，有效期 12 小时。</p>
+<p><strong>校验</strong>：所有请求（除 <code>/login</code>）经过 <code>TokenInterceptor</code> → 从 Header 取 <code>token</code> → <code>JwtUtils.parseToken()</code> 校验签名和过期时间 → 提取用户 id → 存入 <code>CurrentHolder</code>（ThreadLocal）。</p>
+<p><strong>清理</strong>：请求结束后 <code>afterCompletion()</code> 中调用 <code>CurrentHolder.remove()</code> 防止内存泄漏——因为 Tomcat 线程池复用，不清理会导致线程下次被复用时串用户。</p>
+</blockquote>
+<h3 id="Q3-为什么用-ThreadLocal？有什么风险？"><a href="#Q3-为什么用-ThreadLocal？有什么风险？" class="headerlink" title="Q3: 为什么用 ThreadLocal？有什么风险？"></a>Q3: 为什么用 ThreadLocal？有什么风险？</h3><blockquote>
+<p>Spring 的 Controller 默认是单例的，多个请求共享同一个 Controller 实例。如果我在 Controller 里用成员变量存用户信息，多个请求会互相覆盖。</p>
+<p>ThreadLocal 给每个线程一个独立副本——一个 HTTP 请求从进来到离开始终在同一个线程中处理（Tomcat 线程模型），所以 ThreadLocal 天然隔离不同用户的请求。</p>
+<p><strong>风险</strong>：线程池复用导致内存泄漏和串用户。必须在 <code>finally</code> 或拦截器的 <code>afterCompletion</code> 中 <code>remove()</code>。</p>
+<p>这里还有一个细节：<code>/login</code> 路径被 <code>WebConfig</code> 排除了拦截器，所以不会走到 ThreadLocal 的 set，但 TokenInterceptor 只做 set，所以无影响。</p>
+</blockquote>
+<h3 id="Q4-AOP-操作日志怎么实现的？"><a href="#Q4-AOP-操作日志怎么实现的？" class="headerlink" title="Q4: AOP 操作日志怎么实现的？"></a>Q4: AOP 操作日志怎么实现的？</h3><blockquote>
+<p>我写了一个自定义注解 <code>@LogOperation</code>，标注在 Controller 方法上。</p>
+<p><code>LogAspect</code> 切面类用了 <code>@Aspect</code> + <code>@Component</code>，通过 <code>@Around(&quot;@annotation(LogOperation)&quot;)</code> 拦截所有标注了该注解的方法。</p>
+<p>在环绕通知里：先记开始时间 → <code>joinPoint.proceed()</code> 执行目标方法 → 计算耗时 → 从 ThreadLocal 拿操作人 ID → 构建 <code>OperateLog</code> 对象（类名、方法名、参数、返回值、耗时）→ <code>OperateLogMapper.insert()</code> 写入数据库。</p>
+<p>这样做的好处是声明式、零侵入——以后想记录哪个操作，加个注解就行，不用改业务代码。</p>
+</blockquote>
+<h3 id="Q5-事务是怎么管理的？遇到什么特殊情况？"><a href="#Q5-事务是怎么管理的？遇到什么特殊情况？" class="headerlink" title="Q5: 事务是怎么管理的？遇到什么特殊情况？"></a>Q5: 事务是怎么管理的？遇到什么特殊情况？</h3><blockquote>
+<p>Spring 的声明式事务 <code>@Transactional</code>。员工新增 <code>add()</code> 方法标注了 <code>@Transactional(rollbackFor = Exception.class)</code>。</p>
+<p><strong>特殊情况</strong>：操作日志的写入。我在 <code>EmpLogServiceImpl.insertLog()</code> 上用了 <code>@Transactional(propagation = Propagation.REQUIRES_NEW)</code>。</p>
+<p>原因：如果新增员工的主事务回滚了（比如工作经历插入失败），操作日志不能跟着回滚——审计日志必须保留。<code>REQUIRES_NEW</code> 会挂起当前事务，新开一个独立事务，日志写入后立即提交，不受主事务回滚影响。</p>
+<p>同时用了 <code>finally</code> 块保证即使主事务抛异常，日志代码也一定执行。</p>
+</blockquote>
+<h3 id="Q6-分页怎么做的？为什么用物理分页？"><a href="#Q6-分页怎么做的？为什么用物理分页？" class="headerlink" title="Q6: 分页怎么做的？为什么用物理分页？"></a>Q6: 分页怎么做的？为什么用物理分页？</h3><blockquote>
+<p>用了 PageHelper 插件。<code>PageHelper.startPage(page, pageSize)</code> 后紧跟着 MyBatis 查询，PageHelper 通过 MyBatis 拦截器自动在 SQL 前加 <code>SELECT count(0)</code> 查总数，然后在原 SQL 上加 <code>LIMIT offset, size</code>。</p>
+<p>物理分页 vs 逻辑分页：物理分页只查需要的数据量，百万级数据也不怕；逻辑分页（把全部数据查出来再内存截取）数据量大直接 OOM。</p>
+</blockquote>
+<h3 id="Q7-文件上传怎么做的？安全方面考虑了哪些？"><a href="#Q7-文件上传怎么做的？安全方面考虑了哪些？" class="headerlink" title="Q7: 文件上传怎么做的？安全方面考虑了哪些？"></a>Q7: 文件上传怎么做的？安全方面考虑了哪些？</h3><blockquote>
+<p>用了阿里云 OSS SDK。<code>AliyunOSSOperator.upload()</code> 接收文件字节数组和原始文件名：</p>
+<ol>
+<li>从环境变量读取 AK&#x2F;SK（不是硬编码）</li>
+<li>按日期 <code>yyyy/MM</code> 分目录</li>
+<li>UUID 生成唯一文件名防覆盖</li>
+<li>V4 签名算法</li>
+<li>finally 中 shutdown OSS 客户端防连接泄漏</li>
+</ol>
+<p>安全方面：凭证走环境变量、V4 签名、UUID 防遍历。</p>
+</blockquote>
+<h3 id="Q8-MyBatis-怎么用的？注解和-XML-有什么区别？"><a href="#Q8-MyBatis-怎么用的？注解和-XML-有什么区别？" class="headerlink" title="Q8: MyBatis 怎么用的？注解和 XML 有什么区别？"></a>Q8: MyBatis 怎么用的？注解和 XML 有什么区别？</h3><blockquote>
+<p>我采用了混合模式。简单 SQL（部门 CRUD、插入日志）用 <code>@Insert</code> &#x2F; <code>@Select</code> &#x2F; <code>@Delete</code> 注解直接写在 Mapper 接口上。</p>
+<p>复杂 SQL 用 XML 写——比如员工列表查询有 4 个可选过滤条件，XML 里用 <code>&lt;if&gt;</code> 动态拼接 WHERE 子句；员工详情查询需要 JOIN 两张表（dept + emp_expr）用 <code>&lt;resultMap&gt;</code> + <code>&lt;collection&gt;</code> 做一对多映射。</p>
+<p>我在这个过程中踩过坑：XML 的 statement id 必须和接口方法名<strong>严格一致（包括大小写）</strong>，否则 MyBatis 找不到 SQL 会抛 BindingException。</p>
+</blockquote>
+<h3 id="Q9-如果有-1000-个人同时访问，你的系统能撑住吗？"><a href="#Q9-如果有-1000-个人同时访问，你的系统能撑住吗？" class="headerlink" title="Q9: 如果有 1000 个人同时访问，你的系统能撑住吗？"></a>Q9: 如果有 1000 个人同时访问，你的系统能撑住吗？</h3><blockquote>
+<p>目前的单机部署，Tomcat 默认线程池 200 线程。1000 并发的话：</p>
+<ul>
+<li>数据库连接池是瓶颈（需检查 HikariCP 配置，默认 10 连接远不够）</li>
+<li>需要加连接池大小、加索引、上 Redis 缓存热点数据</li>
+<li>文件上传是同步的，大文件会阻塞线程</li>
+<li>如果要扛高并发，需要加 Nginx 反向代理 + 多实例 + 读写分离</li>
+</ul>
+<p>但这对于培训机构内部管理场景来说，并发不会超过几十人，当前架构完全够用。</p>
+</blockquote>
+<h3 id="Q10-你在这个项目中最大的收获是什么？"><a href="#Q10-你在这个项目中最大的收获是什么？" class="headerlink" title="Q10: 你在这个项目中最大的收获是什么？"></a>Q10: 你在这个项目中最大的收获是什么？</h3><blockquote>
+<p>第一是理解了拦截器 + ThreadLocal 这种请求级上下文传递模式，很多框架（Spring Security、事务管理器）底层都是这么做的。</p>
+<p>第二是 AOP 的实战应用——不只是学了个概念，而是真的用它解决了操作日志这个横切关注点。</p>
+<p>第三是踩了一些真实的坑：MyBatis 的 statement ID 大小写问题、JWT 密钥随机生成导致 token 失效、事务传播级别理解不到位导致日志回滚——这些都是在调试中发现的，和只看书完全不同的体验。</p>
+</blockquote>
+<hr>
+<h2 id="10-项目启动指南"><a href="#10-项目启动指南" class="headerlink" title="10. 项目启动指南"></a>10. 项目启动指南</h2><h3 id="环境要求"><a href="#环境要求" class="headerlink" title="环境要求"></a>环境要求</h3><ul>
+<li>JDK 17+</li>
+<li>MySQL 8.x</li>
+<li>Maven 3.6+</li>
+</ul>
+<h3 id="数据库初始化"><a href="#数据库初始化" class="headerlink" title="数据库初始化"></a>数据库初始化</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> DATABASE IF <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">EXISTS</span> tilias <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">CHARACTER SET</span> utf8mb4;<br><br><span class="hljs-comment">-- 执行建表 SQL（已包含在项目中或自行创建）</span><br><br><span class="hljs-keyword">CREATE TABLE</span> dept (<br>    id <span class="hljs-type">INT</span> AUTO_INCREMENT <span class="hljs-keyword">PRIMARY KEY</span>,<br>    name <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>),<br>    create_time DATETIME,<br>    update_time DATETIME<br>);<br><br><span class="hljs-keyword">CREATE TABLE</span> emp (<br>    id <span class="hljs-type">INT</span> AUTO_INCREMENT <span class="hljs-keyword">PRIMARY KEY</span>,<br>    username <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>),<br>    password <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>),<br>    name <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>),<br>    gender TINYINT,<br>    phone <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>),<br>    job TINYINT,<br>    salary <span class="hljs-type">DECIMAL</span>(<span class="hljs-number">10</span>,<span class="hljs-number">2</span>),<br>    image <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">500</span>),<br>    entry_date <span class="hljs-type">DATE</span>,<br>    dept_id <span class="hljs-type">INT</span>,<br>    create_time DATETIME,<br>    update_time DATETIME<br>);<br><br><span class="hljs-keyword">CREATE TABLE</span> emp_expr (<br>    id <span class="hljs-type">INT</span> AUTO_INCREMENT <span class="hljs-keyword">PRIMARY KEY</span>,<br>    emp_id <span class="hljs-type">INT</span>,<br>    <span class="hljs-keyword">begin</span> <span class="hljs-type">DATE</span>,<br>    <span class="hljs-keyword">end</span> <span class="hljs-type">DATE</span>,<br>    company <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>),<br>    job <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>)<br>);<br><br><span class="hljs-keyword">CREATE TABLE</span> emp_log (<br>    id <span class="hljs-type">INT</span> AUTO_INCREMENT <span class="hljs-keyword">PRIMARY KEY</span>,<br>    operate_time DATETIME,<br>    info <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">500</span>)<br>);<br><br><span class="hljs-keyword">CREATE TABLE</span> operate_log (<br>    id <span class="hljs-type">INT</span> AUTO_INCREMENT <span class="hljs-keyword">PRIMARY KEY</span>,<br>    operate_emp_id <span class="hljs-type">INT</span>,<br>    operate_time DATETIME,<br>    class_name <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>),<br>    method_name <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">255</span>),<br>    method_params <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">1000</span>),<br>    return_value <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">500</span>),<br>    cost_time <span class="hljs-type">BIGINT</span><br>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置修改"><a href="#配置修改" class="headerlink" title="配置修改"></a>配置修改</h3><p>编辑 <code>src/main/resources/application.yaml</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">datasource:</span><br>    <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:mysql://localhost:3306/tilias?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=Asia/Shanghai</span><br>    <span class="hljs-attr">username:</span> <span class="hljs-string">root</span><br>    <span class="hljs-attr">password:</span> <span class="hljs-string">你的密码</span>  <span class="hljs-comment"># ← 改这里</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="配置阿里云-OSS-环境变量（如需文件上传）"><a href="#配置阿里云-OSS-环境变量（如需文件上传）" class="headerlink" title="配置阿里云 OSS 环境变量（如需文件上传）"></a>配置阿里云 OSS 环境变量（如需文件上传）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">export</span> OSS_ACCESS_KEY_ID=你的AK<br><span class="hljs-built_in">export</span> OSS_ACCESS_KEY_SECRET=你的SK<br></code></pre></td></tr></table></figure>
+
+<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> tilias-web-management<br>mvn spring-boot:run<br></code></pre></td></tr></table></figure>
+
+<p>服务运行在 <code>http://localhost:8080</code>。</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 登录</span><br>curl -X POST http://localhost:8080/login \<br>  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \<br>  -d <span class="hljs-string">&#x27;&#123;&quot;username&quot;:&quot;admin&quot;,&quot;password&quot;:&quot;123456&quot;&#125;&#x27;</span><br><br><span class="hljs-comment"># 用返回的 token 访问其他接口</span><br>curl http://localhost:8080/depts \<br>  -H <span class="hljs-string">&quot;token: eyJhbGciOiJIUzI1NiJ9...&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="附录-A-配置文件速查"><a href="#附录-A-配置文件速查" class="headerlink" title="附录 A: 配置文件速查"></a>附录 A: 配置文件速查</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># application.yaml 关键配置</span><br><span class="hljs-attr">server.port:</span> <span class="hljs-number">8080</span><br><br><span class="hljs-attr">spring.datasource:</span><br>  <span class="hljs-attr">driver:</span> <span class="hljs-string">com.mysql.cj.jdbc.Driver</span><br>  <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:mysql://localhost:3306/tilias</span><br><br><span class="hljs-attr">spring.jackson:</span><br>  <span class="hljs-attr">default-property-inclusion:</span> <span class="hljs-string">non_null</span>    <span class="hljs-comment"># null 不序列化</span><br>  <span class="hljs-attr">time-zone:</span> <span class="hljs-string">Asia/Shanghai</span><br>  <span class="hljs-attr">date-format:</span> <span class="hljs-string">yyyy-MM-dd</span> <span class="hljs-string">HH:mm:ss</span><br><br><span class="hljs-attr">aliyun.oss:</span><br>  <span class="hljs-attr">endpoint:</span> <span class="hljs-string">https://oss-cn-beijing.aliyuncs.com</span><br>  <span class="hljs-attr">bucket-name:</span> <span class="hljs-string">kakura</span><br>  <span class="hljs-attr">region:</span> <span class="hljs-string">cn-beijing</span><br><br><span class="hljs-attr">mybatis:</span><br>  <span class="hljs-attr">mapper-locations:</span> <span class="hljs-string">classpath:com/ithwq/mapper/*.xml</span><br>  <span class="hljs-attr">configuration:</span><br>    <span class="hljs-attr">map-underscore-to-camel-case:</span> <span class="hljs-literal">true</span>    <span class="hljs-comment"># 下划线转驼峰</span><br>    <span class="hljs-attr">log-impl:</span> <span class="hljs-string">StdOutImpl</span>                  <span class="hljs-comment"># SQL 日志输出</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="附录-B-关键类依赖关系图"><a href="#附录-B-关键类依赖关系图" class="headerlink" title="附录 B: 关键类依赖关系图"></a>附录 B: 关键类依赖关系图</h2><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">DeptController</span><br>  └─ <span class="hljs-selector-tag">DeptServiceable</span><br>      └─ <span class="hljs-selector-tag">DeptMapper</span> (纯注解)<br><br><span class="hljs-selector-tag">EmpController</span><br>  └─ <span class="hljs-selector-tag">EmpServiceImpl</span><br>      ├─ <span class="hljs-selector-tag">EmpMapper</span> (XML + 注解)<br>      ├─ <span class="hljs-selector-tag">EmpExprMapper</span> (XML)<br>      └─ <span class="hljs-selector-tag">EmpLogService</span> → <span class="hljs-selector-tag">EmpLogServiceImpl</span> (REQUIRES_NEW)<br>          └─ <span class="hljs-selector-tag">EmpLogMapper</span> (纯注解)<br><br><span class="hljs-selector-tag">LoginController</span><br>  └─ <span class="hljs-selector-tag">EmpServiceImpl</span><span class="hljs-selector-class">.login</span>()<br>      ├─ <span class="hljs-selector-tag">EmpMapper</span><span class="hljs-selector-class">.login</span>()<br>      └─ <span class="hljs-selector-tag">JwtUtils</span><span class="hljs-selector-class">.generateToken</span>()<br><br><span class="hljs-selector-tag">ReportController</span><br>  └─ <span class="hljs-selector-tag">ReportServiceImpl</span><br>      └─ <span class="hljs-selector-tag">EmpMapper</span><span class="hljs-selector-class">.listMaps</span>() / <span class="hljs-selector-tag">genderListMaps</span>()<br><br><span class="hljs-selector-tag">LogController</span><br>  └─ <span class="hljs-selector-tag">EmpServiceImpl</span><span class="hljs-selector-class">.GetLogpage</span>()<br>      └─ <span class="hljs-selector-tag">EmpMapper</span><span class="hljs-selector-class">.log</span>()<br><br><span class="hljs-selector-tag">UploadController</span><br>  └─ <span class="hljs-selector-tag">AliyunOSSOperator</span><br>      └─ <span class="hljs-selector-tag">AliyunOSSProperties</span> (<span class="hljs-variable">@ConfigurationProperties</span>)<br><br><span class="hljs-selector-tag">TokenInterceptor</span><br>  ├─ <span class="hljs-selector-tag">JwtUtils</span><span class="hljs-selector-class">.parseToken</span>()<br>  └─ <span class="hljs-selector-tag">CurrentHolder</span> (ThreadLocal)<br><br><span class="hljs-selector-tag">LogAspect</span><br>  ├─ <span class="hljs-selector-tag">CurrentHolder</span><span class="hljs-selector-class">.getCurrentId</span>()<br>  └─ <span class="hljs-selector-tag">OperateLogMapper</span><span class="hljs-selector-class">.insert</span>()<br></code></pre></td></tr></table></figure>
+
+<hr>
+<blockquote>
+<p>📌 <strong>面试建议</strong>：不要逐字背诵，理解每段代码「为什么这样写」。面试官更在意你的设计思路和踩坑经验，而不是背 API 文档。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" class="print-no-link">#后端开发</a>
+      
+        <a href="/tags/Javaweb/" class="print-no-link">#Javaweb</a>
+      
+        <a href="/tags/%E5%85%A8%E6%A0%88/" class="print-no-link">#全栈</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>实习项目</div>
+      <div>https://houwenqing431-sketch.github.io/2026/04/28/INTERVIEW_REFERENCE/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>侯文卿</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年4月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/05/04/%E8%AF%BE%E5%A0%82%E4%BD%9C%E4%B8%9A%EF%BC%9A%E5%88%9D%E6%8E%A2%E5%BD%A2%E5%BC%8F%E5%8C%96%E6%96%B9%E6%B3%95%E4%B8%8EUML/" title="软件工程笔记：初探形式化方法与面向对象建模 (UML)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">软件工程笔记：初探形式化方法与面向对象建模 (UML)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/04/28/Java-%E6%9E%9A%E4%B8%BE-Enum-%E7%9A%84%E9%AB%98%E7%BA%A7%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/" title="Java 枚举 (Enum) 的高级应用场景">
+                        <span class="hidden-mobile">Java 枚举 (Enum) 的高级应用场景</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
