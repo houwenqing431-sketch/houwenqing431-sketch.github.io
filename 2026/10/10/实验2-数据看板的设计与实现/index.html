@@ -1,0 +1,997 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="侯文卿">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="用 Streamlit + Pandas + Plotly 从零做一套电商销售数据看板：自己造数据、自己定颜色规则、自己写图表，最后再自己想办法证明”它真的能跑”。这篇记录里最值得看的可能不是成品，而是我踩过的那些坑——尤其是几条”看起来对、其实在骗人”的图表。    一、先想清楚它要回答什么问题实验要求分四大模块：数据概览、维度统计、趋势分析、明细数据。但我不想为了凑模块而凑模块，所以先问自己">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实验2 数据看板的设计与实现">
+<meta property="og:url" content="https://houwenqing431-sketch.github.io/2026/10/10/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="侯文卿的个人博客">
+<meta property="og:description" content="用 Streamlit + Pandas + Plotly 从零做一套电商销售数据看板：自己造数据、自己定颜色规则、自己写图表，最后再自己想办法证明”它真的能跑”。这篇记录里最值得看的可能不是成品，而是我踩过的那些坑——尤其是几条”看起来对、其实在骗人”的图表。    一、先想清楚它要回答什么问题实验要求分四大模块：数据概览、维度统计、趋势分析、明细数据。但我不想为了凑模块而凑模块，所以先问自己">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/01-overview.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/02-dimension.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/09-radar.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/03-trend.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/06-realtime.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/07-light.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/08-mobile.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/04-advanced.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/10-trend-chart.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/05-detail.png">
+<meta property="article:published_time" content="2026-10-10T14:10:13.000Z">
+<meta property="article:modified_time" content="2026-10-10T14:16:28.594Z">
+<meta property="article:author" content="侯文卿">
+<meta property="article:tag" content="Pandas">
+<meta property="article:tag" content="Plotly">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Streamlit">
+<meta property="article:tag" content="数据可视化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/01-overview.png">
+  
+  
+  
+  <title>实验2 数据看板的设计与实现 - 侯文卿的个人博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"houwenqing431-sketch.github.io","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>侯文卿的个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="实验2 数据看板的设计与实现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-10-10 22:10" pubdate>
+          2026年10月10日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          61 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">实验2 数据看板的设计与实现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>用 Streamlit + Pandas + Plotly 从零做一套电商销售数据看板：自己造数据、自己定颜色规则、自己写图表，最后再自己想办法证明”它真的能跑”。<br>这篇记录里最值得看的可能不是成品，而是我踩过的那些坑——尤其是几条”看起来对、其实在骗人”的图表。</p>
+</blockquote>
+<p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/01-overview.png" srcset="/img/loading.gif" lazyload></p>
+<hr>
+<h2 id="一、先想清楚它要回答什么问题"><a href="#一、先想清楚它要回答什么问题" class="headerlink" title="一、先想清楚它要回答什么问题"></a>一、先想清楚它要回答什么问题</h2><p>实验要求分四大模块：数据概览、维度统计、趋势分析、明细数据。但我不想为了凑模块而凑模块，所以先问自己：<strong>运营的人早上打开这块屏，是为了回答哪几个问题？</strong></p>
+<table>
+<thead>
+<tr>
+<th>他想知道</th>
+<th>对应模块</th>
+<th>关键指标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>生意整体好不好？</td>
+<td>数据概览</td>
+<td>销售额、订单量、客单价、目标达成率、毛利率、退货率</td>
+</tr>
+<tr>
+<td>好在哪里、差在哪里？</td>
+<td>维度统计</td>
+<td>品类结构、渠道结构、地区结构</td>
+</tr>
+<tr>
+<td>在变好还是变差？</td>
+<td>趋势分析</td>
+<td>日销售额、7 日均线、上期同段对比、大促脉冲</td>
+</tr>
+<tr>
+<td>具体是哪几个品？</td>
+<td>明细数据</td>
+<td>品类&#x2F;渠道&#x2F;地区汇总、商品 Top N、订单明细</td>
+</tr>
+</tbody></table>
+<p>版面按”总览 → 拆解 → 走势 → 明细”自上而下递进，所有筛选器集中在最上面一行——<strong>一次筛选，全页同步</strong>，而不是每张图各自带一套筛选器。</p>
+<hr>
+<h2 id="二、配色这次我没凭感觉挑"><a href="#二、配色这次我没凭感觉挑" class="headerlink" title="二、配色这次我没凭感觉挑"></a>二、配色这次我没凭感觉挑</h2><p>以前做可视化，颜色都是”看着顺眼就行”。这次了解到一套挺硬的规范，就按它来做了，几条规则值得记下来：</p>
+<p><strong>1. 分类色板是 8 个固定色位、固定顺序，第 9 个序列不许生成新颜色。</strong><br>超过 8 个就该归并成”其他”或者拆成小多图，而不是硬凑一个肉眼分不出来的第 9 色。</p>
+<p><strong>2. 颜色跟着”实体”走，不跟着排名走。</strong><br>京东永远是 1 号色位、天猫永远是 2 号。这样筛选之后颜色不会重新分配——读者记住的”天猫是蓝色”不会被推翻。</p>
+<p><strong>3. 名义分类的条形图，所有条用同一个颜色。</strong><br>这一条我一开始不理解：给每个品类不同颜色不是更好看吗？后来想明白了——条形图的长短<strong>已经</strong>表达了大小，再用颜色深浅编码一遍，等于把唯一的”身份通道”浪费在重复信息上。所以品类销售额那张图 7 根条全是主色，需要突出时用”强调一个、其余置灰”。</p>
+<p><strong>4. 量值编码（热力图）只用单色阶，同色相由浅到深，绝不用彩虹色。</strong></p>
+<p><strong>5. 状态色语义专用。</strong> 正常&#x2F;关注&#x2F;超限这三个颜色不参与分类取色，而且永远配图标 + 文字——<strong>颜色永远不是唯一线索</strong>，色觉障碍用户也能读。</p>
+<p><strong>6. 绝不使用双 Y 轴。</strong> 销售额和订单量量纲不同，就老老实实拆成上下两张图。这是最容易被忽略、也最容易骗人的一处。</p>
+<p>配色定下来之后我还写了个小脚本把深浅两套色板分别跑了一遍色觉障碍可分辨度和对比度校验——<strong>深浅两套是各自独立取值的，不是把浅色简单反相</strong>。校验发现浅色模式下青绿&#x2F;黄&#x2F;品红三个色位对比度低于 3:1，规范要求这种情况必须补上”直接标注 + 表格视图”作为兜底，于是环形图的大扇区都标了百分比，明细区也全都有对应的数据表。</p>
+<hr>
+<h2 id="三、数据：先造一份”像真的”，再故意弄脏它"><a href="#三、数据：先造一份”像真的”，再故意弄脏它" class="headerlink" title="三、数据：先造一份”像真的”，再故意弄脏它"></a>三、数据：先造一份”像真的”，再故意弄脏它</h2><p>实验说数据可以 AI 生成。但纯随机数堆出来的流水很无聊——折线图是一条毛刺，看不出任何故事。所以我是先建业务规律，再生成数据：</p>
+<ul>
+<li><strong>长期增长</strong>：180 天约 +60% 的上升趋势</li>
+<li><strong>周末效应</strong>：周六日流量 ×1.15</li>
+<li><strong>大促脉冲</strong>：618 &#x2F; 双 11 &#x2F; 双 12 &#x2F; 88 会员节 ×1.9~2.8，每月 8&#x2F;18&#x2F;28 日会员日 ×1.3</li>
+<li><strong>结构差异</strong>：数码家电偏京东、美妆服饰偏抖音直播、食品生鲜偏拼多多（一张”品类 × 渠道偏好矩阵”）</li>
+<li><strong>渠道退货率差异</strong>：直播带货 12.5%，自营商城 3.0%</li>
+<li><strong>下单双高峰</strong>：上午 10-11 点、晚间 20-22 点</li>
+</ul>
+<p>这样出来的趋势图才有大促尖峰、渠道占比图才有结构性差异、预警模块才有真实素材。</p>
+<h3 id="然后故意把它弄脏"><a href="#然后故意把它弄脏" class="headerlink" title="然后故意把它弄脏"></a>然后故意把它弄脏</h3><p>真实业务里的数据不会是干净的，所以我注入了 6 类最常见的脏数据：</p>
+<table>
+<thead>
+<tr>
+<th>脏数据类型</th>
+<th>注入方式</th>
+<th align="right">注入量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>重复订单</td>
+<td>整行复制，订单号完全重复</td>
+<td align="right">500</td>
+</tr>
+<tr>
+<td>关键字段缺失</td>
+<td>数量&#x2F;单价&#x2F;地区&#x2F;渠道&#x2F;评分置空</td>
+<td align="right">1,045</td>
+</tr>
+<tr>
+<td>非法数量</td>
+<td>0 与负数</td>
+<td align="right">164</td>
+</tr>
+<tr>
+<td>极端值</td>
+<td>单价被误乘 40 倍</td>
+<td align="right">61</td>
+</tr>
+<tr>
+<td>格式不规范</td>
+<td>品类名带半角&#x2F;全角空格、别名</td>
+<td align="right">738</td>
+</tr>
+<tr>
+<td>文本混入数值列</td>
+<td>单价 &#x3D; “暂无报价”</td>
+<td align="right">82</td>
+</tr>
+</tbody></table>
+<p>其中<strong>全角空格</strong>这一项是故意加的：<code>&quot;数码家电&quot;</code> 和 <code>&quot;数码家电　&quot;</code>（U+3000）在屏幕上看起来一模一样，但分组统计时会变成两个品类。清洗时得先正则统一清理：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_strip_ws</span>(<span class="hljs-params">s: pd.Series</span>) -&gt; pd.Series:<br>    <span class="hljs-string">&quot;&quot;&quot;去掉中文全角空格、不间断空格与普通空白 —— 三种空格肉眼几乎看不出差别。&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">return</span> s.astype(<span class="hljs-string">&quot;string&quot;</span>).<span class="hljs-built_in">str</span>.replace(<span class="hljs-string">r&quot;[\s　  ]+&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, regex=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+
+<p>清洗流程一共 7 步，每一步都记录影响行数，最后落到 <code>data/预处理报告.md</code>：</p>
+<p><strong>原始 20,500 行 → 干净 19,088 行，保留率 93.1%</strong>，并通过 9 项质量断言（关键字段无空值、订单号唯一、金额勾稽一致、评分在 1~5……）。断言不过就直接中断落盘，不让脏数据流进看板。</p>
+<p>有一个细节我觉得挺有意思：按品类分组用 IQR 剔极端值，实际剔掉了 240 条，但我注入的只有 61 条。核对之后确认多出来的是真实的长尾贵价商品（笔记本、跑步机这类），属于正常分布的边缘。所以这里用的是 3 倍 IQR 而不是教科书的 1.5 倍——<strong>为了让”异常值处理”不误伤真实业务</strong>，并且在报告里如实记录剔除量。</p>
+<hr>
+<h2 id="四、图表：几个我特意”不这么做”的地方"><a href="#四、图表：几个我特意”不这么做”的地方" class="headerlink" title="四、图表：几个我特意”不这么做”的地方"></a>四、图表：几个我特意”不这么做”的地方</h2><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/02-dimension.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="不做双-Y-轴，拆成两张图"><a href="#不做双-Y-轴，拆成两张图" class="headerlink" title="不做双 Y 轴，拆成两张图"></a>不做双 Y 轴，拆成两张图</h3><p>销售额和订单量放一张图、两个 Y 轴，看起来紧凑，实际上很危险：两个刻度的对齐方式是任意的，图会<strong>凭空造出一个数据里不存在的相关性</strong>。所以趋势区是上下两张图，并在图上注明”避免双 Y 轴造成的误读”。</p>
+<h3 id="环形图顺时针，并且不超过-6-段"><a href="#环形图顺时针，并且不超过-6-段" class="headerlink" title="环形图顺时针，并且不超过 6 段"></a>环形图顺时针，并且不超过 6 段</h3><p>Plotly 的饼图默认是<strong>逆时针</strong>画的，而图例是从上往下排的——两者顺序正好相反，读者对着图例会一直对错。得显式指定：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">fig.add_pie(<br>    labels=d[<span class="hljs-string">&quot;channel&quot;</span>], values=d[<span class="hljs-string">&quot;sales_amount&quot;</span>], hole=<span class="hljs-number">0.62</span>, sort=<span class="hljs-literal">False</span>,<br>    direction=<span class="hljs-string">&quot;clockwise&quot;</span>, rotation=<span class="hljs-number">0</span>,   <span class="hljs-comment"># 让扇区顺序与右侧图例一致</span><br>    marker=&#123;<span class="hljs-string">&quot;colors&quot;</span>: colors, <span class="hljs-string">&quot;line&quot;</span>: &#123;<span class="hljs-string">&quot;color&quot;</span>: theme[<span class="hljs-string">&quot;surface&quot;</span>], <span class="hljs-string">&quot;width&quot;</span>: <span class="hljs-number">2</span>&#125;&#125;,<br>)<br></code></pre></td></tr></table></figure>
+
+<p>顺带一提，扇区之间用的是<strong>背景色 2px 缝隙</strong>，不是描边——描边会多出一圈”不是数据”的墨水。</p>
+<h3 id="雷达图有两个坑"><a href="#雷达图有两个坑" class="headerlink" title="雷达图有两个坑"></a>雷达图有两个坑</h3><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/09-radar.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>坑一：序列数上限。</strong> 雷达图属于”任意两个标记都可能相邻”的形式，颜色两两之间都要能分辨。我用的这套色板在”任意配对”这个更严的测试下，只有前 3 个色位能全部通过——所以雷达图最多同时对比 3 个品类。</p>
+<p><strong>坑二：归一化的基准。</strong> 一开始我是按”被选中的那几个品类”做 min-max 归一化的，结果每换一组对比对象，同一个品类的形状就变了；而且被选中的三项里<strong>必然有一项是 0 分</strong>，图形退化成一根刺。改成以”当前窗口内的全部品类”为基准，并把值域映射到 10~100（最低者不塌到圆心），图形才真正可比：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 以全量最小值作为 0 分起点，最高者 100 分</span><br>out[label] = (s - lo) / (hi - lo) * <span class="hljs-number">90</span> + <span class="hljs-number">10</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="热力图：长尾数据得封顶"><a href="#热力图：长尾数据得封顶" class="headerlink" title="热力图：长尾数据得封顶"></a>热力图：长尾数据得封顶</h3><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/03-trend.png" srcset="/img/loading.gif" lazyload></p>
+<p>地区 × 品类销售额是典型的长尾分布——“华东 × 数码家电”一格把量程拉满，其余全挤在色阶最浅的一头，整张图几乎一个颜色。解决办法是把色阶上端截到 88 分位：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">zmax = <span class="hljs-built_in">float</span>(np.percentile(z, cap_percentile))   <span class="hljs-comment"># 默认 88 分位</span><br>fig.add_heatmap(z=z, colorscale=..., zmin=<span class="hljs-number">0</span>, zmax=zmax, xgap=<span class="hljs-number">2</span>, ygap=<span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
+
+<p>极端格显示为饱和色，色阶图例上注明”≥13 饱和”。<strong>截断只影响颜色</strong>——悬浮提示和表格视图里仍然是真实值，信息没有丢。</p>
+<p>同一张图里右边那个”星期 × 时段”热力图还藏着一个更隐蔽的坑：各时段箱覆盖的小时数不一样（上午 6 小时、午间只有 2 小时），直接画总量等于<strong>拿 2 小时对比 6 小时</strong>。结果就是”上午”亮得离谱，和另一张按小时统计的时段分布图完全矛盾。改成统一换算成”每小时平均订单量”之后，两张图的结论才一致。</p>
+<hr>
+<h2 id="五、交互：筛选联动-秒级实时"><a href="#五、交互：筛选联动-秒级实时" class="headerlink" title="五、交互：筛选联动 + 秒级实时"></a>五、交互：筛选联动 + 秒级实时</h2><h3 id="点击钻取"><a href="#点击钻取" class="headerlink" title="点击钻取"></a>点击钻取</h3><p>维度区的品类条形图可以点：点某一根条，右边的环形图切换成该品类的渠道结构，商品排行、明细表、雷达图同步过滤。用的是 Plotly 的 <code>on_select</code> 回调，把点击落到 session state，不做全页重绘：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">event = st.plotly_chart(<br>    C.category_bar(category_summary(cur), theme, selected=drill),<br>    width=<span class="hljs-string">&quot;stretch&quot;</span>, theme=<span class="hljs-literal">None</span>, config=C.PLOTLY_CONFIG,<br>    key=<span class="hljs-string">&quot;chart_category&quot;</span>, on_select=<span class="hljs-string">&quot;rerun&quot;</span>, selection_mode=<span class="hljs-string">&quot;points&quot;</span>,<br>)<br>pts = (event <span class="hljs-keyword">or</span> &#123;&#125;).get(<span class="hljs-string">&quot;selection&quot;</span>, &#123;&#125;).get(<span class="hljs-string">&quot;points&quot;</span>, [])<br><span class="hljs-keyword">if</span> pts <span class="hljs-keyword">and</span> pts[<span class="hljs-number">0</span>].get(<span class="hljs-string">&quot;y&quot;</span>) <span class="hljs-keyword">in</span> CATEGORY_ORDER:<br>    st.session_state[<span class="hljs-string">&quot;drill&quot;</span>] = pts[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;y&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<h3 id="实时监控：只重绘一块，不整页刷新"><a href="#实时监控：只重绘一块，不整页刷新" class="headerlink" title="实时监控：只重绘一块，不整页刷新"></a>实时监控：只重绘一块，不整页刷新</h3><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/06-realtime.png" srcset="/img/loading.gif" lazyload></p>
+<p>秒级刷新最容易犯的错是 <code>st.rerun()</code> 整页重跑——图表会闪、筛选状态会跳。Streamlit 的 <code>st.fragment(run_every=...)</code> 可以只重跑指定区域：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@st.fragment(<span class="hljs-params">run_every=interval</span>)      </span><span class="hljs-comment"># interval = 2/5/10/30 秒</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">panel</span>() -&gt; <span class="hljs-literal">None</span>:<br>    incoming = make_live_orders(n_new)<br>    buf = pd.concat([st.session_state[<span class="hljs-string">&quot;live&quot;</span>], incoming], ignore_index=<span class="hljs-literal">True</span>).tail(<span class="hljs-number">600</span>)<br>    st.session_state[<span class="hljs-string">&quot;live&quot;</span>] = buf<br>    <span class="hljs-comment"># 只渲染实时指标卡 + 累计折线 + 最新订单流水</span><br></code></pre></td></tr></table></figure>
+
+<p>这样历史部分完全不动，只有实时区在跳。另外我加了 <code>?realtime=1&amp;interval=2</code> 的查询参数支持，方便把看板挂到大屏上常驻。</p>
+<hr>
+<h2 id="六、踩坑记录"><a href="#六、踩坑记录" class="headerlink" title="六、踩坑记录"></a>六、踩坑记录</h2><p>这部分是这篇最想留下来的东西。</p>
+<p><strong>1. pandas 3.0 下时间戳加 Timedelta 报 <code>UFuncBinaryResolutionError</code>。</strong><br><code>dates.values</code> 在 pandas 3.0 是 <code>datetime64[us]</code>，而 <code>pd.Timedelta</code> 对象数组是 <code>object</code>，两者不能直接相加。得把偏移量构造成同精度的 <code>timedelta64</code> 再运算：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">offsets = pd.to_timedelta(seconds_of_day, unit=<span class="hljs-string">&quot;s&quot;</span>).to_numpy()<br>timestamps = dates.to_numpy()[day_idx] + offsets<br></code></pre></td></tr></table></figure>
+
+<p><strong>2. Streamlit 会偷偷覆盖我调好的图表配色。</strong><br><code>st.plotly_chart</code> 默认套 Streamlit 自己的主题，把我设置的字体、颜色、边距全盖掉。必须显式关掉：<code>theme=None</code>。这个坑很阴——图上不是报错，只是”看起来不太对”。</p>
+<p><strong>3. 数据卡片的数字滚动动画算不出来。</strong><br>用 CSS 计数器做滚动效果，但千分位逗号会让计数器解析失败（<code>int(&quot;1,234&quot;)</code> 直接报错）。最后让卡片数字单独走一套不带逗号的格式化逻辑，反正统一按”万&#x2F;亿”换算后数字本身就很短。</p>
+<p><strong>4. 长图截图里侧边栏错位。</strong><br>我用 headless Chrome 截了一张 1680×8600 的整页长图，结果侧边栏内容被裁在左边缘。查了半天 DOM 才发现布局是好的——<strong>是超高视口下 Chrome 的分屏合成不可靠</strong>。而且 8600px 的长图缩放后本来也看不清。改成”一屏一张”的滚动截屏就都解决了。</p>
+<p><strong>5. 改完公共模块，看板刷新了但样式没变。</strong><br>Streamlit 的热重载会重跑主脚本，但已经 import 的模块还留在 <code>sys.modules</code> 里。改完 <code>src/</code> 下的公共模块得重启服务。后面我所有的截图和自检都在重启后重跑。</p>
+<p><strong>6. 切到亮色主题，图表变亮了但控件还是暗的。</strong><br>Streamlit 的主题是编译期注入的，运行时没有官方切换接口；而且 1.65 并没有把主题令牌暴露成 CSS 变量可以直接覆盖。只能逐个 <code>data-testid</code> 覆盖控件外壳，并把覆盖全部写成引用自定义主题变量（<code>var(--surface-2)</code> 这类），这样同一套规则在深浅两色下都成立。</p>
+<hr>
+<h2 id="七、怎么证明”它真的能跑”"><a href="#七、怎么证明”它真的能跑”" class="headerlink" title="七、怎么证明”它真的能跑”"></a>七、怎么证明”它真的能跑”</h2><p>这部分我觉得是整次实验收获最大的。</p>
+<p>改完代码总要验证，但看板类项目有个麻烦：<strong>它的产物是浏览器里的画面</strong>。靠人肉点一遍不现实，而我也没有可以目视的图形界面环境。</p>
+<h3 id="第一层：无浏览器自检"><a href="#第一层：无浏览器自检" class="headerlink" title="第一层：无浏览器自检"></a>第一层：无浏览器自检</h3><p>Streamlit 官方提供了 <code>AppTest</code>，可以在无浏览器环境下把 app 完整跑一遍，并直接捕获里面的 Python 异常：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> streamlit.testing.v1 <span class="hljs-keyword">import</span> AppTest<br><br>at = AppTest.from_file(<span class="hljs-string">&quot;app.py&quot;</span>, default_timeout=<span class="hljs-number">300</span>)<br>at.session_state[<span class="hljs-string">&quot;drill&quot;</span>] = <span class="hljs-string">&quot;美妆个护&quot;</span>      <span class="hljs-comment"># 模拟一条交互路径</span><br>at.run()<br><span class="hljs-keyword">assert</span> <span class="hljs-keyword">not</span> at.exception<br></code></pre></td></tr></table></figure>
+
+<p>我把默认路径和几条容易漏测的交互分支（钻取、实时模式、亮色主题、预警触发、生成报告、极端筛选）都写成了用例，一共 13 项。它一次性抓出了三个真 bug：</p>
+<ul>
+<li>报告模块漏传 <code>theme</code> 参数，只在点”生成报告”时才炸</li>
+<li>坐标轴辅助函数不接受 <code>nticks</code> 参数，只在实时模式下才炸</li>
+<li><strong>筛选到单个地区时 <code>iloc[1]</code> 越界</strong>——自动结论文案里写了”华东与华南合计贡献 xx%”，直接取第二行，而只剩一个地区时汇总表只有一行</li>
+</ul>
+<p>第三个尤其值得说：这种 bug 手点很难碰到，但真实用户随手就能触发（”我就想看看西北区”）。</p>
+<h3 id="第二层：眼睛验证"><a href="#第二层：眼睛验证" class="headerlink" title="第二层：眼睛验证"></a>第二层：眼睛验证</h3><p>自检能保证不报错，但保证不了”好不好看”。所以我用 DevTools 协议驱动本机 Chrome 截图——<strong>先等页面真的渲染完（websocket 数据回来、Plotly 画完）再按快门</strong>，不会拍到骨架屏。相比 <code>chrome --screenshot</code>，这一步等待是必须的。</p>
+<p>视觉验证也确实抓到了问题：KPI 卡片因为塞了口径说明文字被撑成两行高、整排高矮不齐；”自定义”时间范围选项被挤得看不见；手机端侧边栏盖住整屏。这些都是”能跑但不好看&#x2F;不好用”的问题，功能测试永远发现不了。</p>
+<hr>
+<h2 id="八、双主题与多端"><a href="#八、双主题与多端" class="headerlink" title="八、双主题与多端"></a>八、双主题与多端</h2><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/07-light.png" srcset="/img/loading.gif" lazyload></p>
+<p>亮色模式不是简单反相——两套色阶分别取值、分别校验，图表颜色也跟着切换（热力图的色阶方向在深色下<strong>要翻过来</strong>：深色背景上”浅色 &#x3D; 接近 0”这个约定不成立）。</p>
+<p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/08-mobile.png" srcset="/img/loading.gif" lazyload></p>
+<p>手机上做了三档响应式断点，窄屏下指标卡和进度仪表都竖排，侧边栏设为 <code>auto</code> 自动收起（之前写死 <code>expanded</code>，430px 下侧边栏会盖住整屏）。</p>
+<p><strong>但这里要如实说一句</strong>：这本质上是个宽屏看板，手机上四区内容拉成一长条，得滚十几屏，属于”能用但不好用”。真要移动端体验好，得另做一个精简版页面（只留指标卡 + 趋势图 + 预警），而不是靠响应式硬撑。</p>
+<hr>
+<h2 id="九、成果与不足"><a href="#九、成果与不足" class="headerlink" title="九、成果与不足"></a>九、成果与不足</h2><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/04-advanced.png" srcset="/img/loading.gif" lazyload></p>
+<p>最终交付的东西：</p>
+<ul>
+<li><strong>看板</strong>：<code>app.py</code> + <code>src/</code> 8 个模块，四区布局 + 全局筛选 + 点击钻取 + 秒级实时 + 可调阈值预警 + 双主题</li>
+<li><strong>数据</strong>：20,500 条含 6 类脏数据的模拟流水 → 19,088 条清洗后有效数据，附预处理报告</li>
+<li><strong>辅助脚本</strong>：<code>smoke_test.py</code>（13 项自检）、<code>export_charts.py</code>（图表批量导出）、<code>screenshot.py</code>（看板截图）</li>
+<li><strong>图表导出</strong>：12 张图表 × 深浅两套主题，可脱离看板独立阅读、直接插进报告</li>
+<li><strong>一键报告</strong>：生成的 HTML 内含可交互图表，可以独立打开</li>
+</ul>
+<p>单张图表导出后是这样的（补了标题、留足了坐标轴标签的空间）：</p>
+<p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/10-trend-chart.png" srcset="/img/loading.gif" lazyload></p>
+<p>看板内的明细区则给每张图都配了等价的表格视图——<strong>颜色和图形之外，永远有一条能读到原始数字的路</strong>：</p>
+<p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/05-detail.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>还不足的地方：</strong></p>
+<ol>
+<li>移动端只是”能用”，没到”好用”（上面说过）</li>
+<li>亮色模式下 Streamlit 自带控件的外壳是靠 CSS 覆盖对齐的，滚动条、日期选择弹层这类边缘元素仍会跟随配置里的暗色底——这是 Streamlit 运行时不能换主题导致的妥协</li>
+<li>实时区目前是本地模拟生成器按加速倍率推送，不是真实数据源。不过换成 Kafka &#x2F; 数据库轮询 &#x2F; HTTP 接口的话，<code>st.fragment</code> 这套刷新机制一行都不用改</li>
+<li>预警只做到了页面内提示，没接企业微信&#x2F;钉钉机器人主动告警</li>
+</ol>
+<hr>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这次实验最超出预期的收获是：<strong>“画好一张图”和”画对一张图”是两件事。</strong></p>
+<p>双 Y 轴、按数值深浅给条形上色、拿 2 小时对比 6 小时——这些做法都很常见，图也都不难看，但它们会悄悄地误导读者。反过来，把配色规则、序列数上限、归一化基准这些约束想清楚之后，好看的图是规则的副产品，而不是靠审美硬调出来的。</p>
+<p>另一收获是验证方式。以前写完代码”自己点一遍看着没问题”就算完了，这次搭起来的两层验证（AppTest 自检 + 自动化截图）抓出来的全是<strong>功能正常但体验有问题</strong>的 bug——这类问题恰恰是”点一遍”最容易漏掉的。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" class="print-no-link">#数据可视化</a>
+      
+        <a href="/tags/Streamlit/" class="print-no-link">#Streamlit</a>
+      
+        <a href="/tags/Plotly/" class="print-no-link">#Plotly</a>
+      
+        <a href="/tags/Pandas/" class="print-no-link">#Pandas</a>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>实验2 数据看板的设计与实现</div>
+      <div>https://houwenqing431-sketch.github.io/2026/10/10/实验2-数据看板的设计与实现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>侯文卿</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年10月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/06/20/INTERVIEW_REFERENCE/" title="实习项目">
+                        <span class="hidden-mobile">实习项目</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
