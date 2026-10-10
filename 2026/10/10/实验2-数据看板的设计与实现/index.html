@@ -26,18 +26,18 @@
 <meta property="og:site_name" content="侯文卿的个人博客">
 <meta property="og:description" content="用 Streamlit + Pandas + Plotly 从零做一套电商销售数据看板：自己造数据、自己定颜色规则、自己写图表，最后再自己想办法证明”它真的能跑”。这篇记录里最值得看的可能不是成品，而是我踩过的那些坑——尤其是几条”看起来对、其实在骗人”的图表。    一、先想清楚它要回答什么问题实验要求分四大模块：数据概览、维度统计、趋势分析、明细数据。但我不想为了凑模块而凑模块，所以先问自己">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/01-overview.png">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/02-dimension.png">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/09-radar.png">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/03-trend.png">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/06-realtime.png">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/07-light.png">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/08-mobile.png">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/04-advanced.png">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/10-trend-chart.png">
-<meta property="og:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/05-detail.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/01-overview.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/02-dimension.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/09-radar.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/03-trend.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/06-realtime.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/07-light.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/08-mobile.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/04-advanced.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/10-trend-chart.png">
+<meta property="og:image" content="https://houwenqing431-sketch.github.io/05-detail.png">
 <meta property="article:published_time" content="2026-10-10T14:10:13.000Z">
-<meta property="article:modified_time" content="2026-10-10T14:16:28.594Z">
+<meta property="article:modified_time" content="2026-10-10T14:24:47.992Z">
 <meta property="article:author" content="侯文卿">
 <meta property="article:tag" content="Pandas">
 <meta property="article:tag" content="Plotly">
@@ -45,7 +45,7 @@
 <meta property="article:tag" content="Streamlit">
 <meta property="article:tag" content="数据可视化">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://houwenqing431-sketch.github.io/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/01-overview.png">
+<meta name="twitter:image" content="https://houwenqing431-sketch.github.io/01-overview.png">
   
   
   
@@ -399,7 +399,7 @@
                 <blockquote>
 <p>用 Streamlit + Pandas + Plotly 从零做一套电商销售数据看板：自己造数据、自己定颜色规则、自己写图表，最后再自己想办法证明”它真的能跑”。<br>这篇记录里最值得看的可能不是成品，而是我踩过的那些坑——尤其是几条”看起来对、其实在骗人”的图表。</p>
 </blockquote>
-<p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/01-overview.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/01-overview.png" srcset="/img/loading.gif" lazyload></p>
 <hr>
 <h2 id="一、先想清楚它要回答什么问题"><a href="#一、先想清楚它要回答什么问题" class="headerlink" title="一、先想清楚它要回答什么问题"></a>一、先想清楚它要回答什么问题</h2><p>实验要求分四大模块：数据概览、维度统计、趋势分析、明细数据。但我不想为了凑模块而凑模块，所以先问自己：<strong>运营的人早上打开这块屏，是为了回答哪几个问题？</strong></p>
 <table>
@@ -499,18 +499,18 @@
 <p><strong>原始 20,500 行 → 干净 19,088 行，保留率 93.1%</strong>，并通过 9 项质量断言（关键字段无空值、订单号唯一、金额勾稽一致、评分在 1~5……）。断言不过就直接中断落盘，不让脏数据流进看板。</p>
 <p>有一个细节我觉得挺有意思：按品类分组用 IQR 剔极端值，实际剔掉了 240 条，但我注入的只有 61 条。核对之后确认多出来的是真实的长尾贵价商品（笔记本、跑步机这类），属于正常分布的边缘。所以这里用的是 3 倍 IQR 而不是教科书的 1.5 倍——<strong>为了让”异常值处理”不误伤真实业务</strong>，并且在报告里如实记录剔除量。</p>
 <hr>
-<h2 id="四、图表：几个我特意”不这么做”的地方"><a href="#四、图表：几个我特意”不这么做”的地方" class="headerlink" title="四、图表：几个我特意”不这么做”的地方"></a>四、图表：几个我特意”不这么做”的地方</h2><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/02-dimension.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="四、图表：几个我特意”不这么做”的地方"><a href="#四、图表：几个我特意”不这么做”的地方" class="headerlink" title="四、图表：几个我特意”不这么做”的地方"></a>四、图表：几个我特意”不这么做”的地方</h2><p><img src="/02-dimension.png" srcset="/img/loading.gif" lazyload></p>
 <h3 id="不做双-Y-轴，拆成两张图"><a href="#不做双-Y-轴，拆成两张图" class="headerlink" title="不做双 Y 轴，拆成两张图"></a>不做双 Y 轴，拆成两张图</h3><p>销售额和订单量放一张图、两个 Y 轴，看起来紧凑，实际上很危险：两个刻度的对齐方式是任意的，图会<strong>凭空造出一个数据里不存在的相关性</strong>。所以趋势区是上下两张图，并在图上注明”避免双 Y 轴造成的误读”。</p>
 <h3 id="环形图顺时针，并且不超过-6-段"><a href="#环形图顺时针，并且不超过-6-段" class="headerlink" title="环形图顺时针，并且不超过 6 段"></a>环形图顺时针，并且不超过 6 段</h3><p>Plotly 的饼图默认是<strong>逆时针</strong>画的，而图例是从上往下排的——两者顺序正好相反，读者对着图例会一直对错。得显式指定：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">fig.add_pie(<br>    labels=d[<span class="hljs-string">&quot;channel&quot;</span>], values=d[<span class="hljs-string">&quot;sales_amount&quot;</span>], hole=<span class="hljs-number">0.62</span>, sort=<span class="hljs-literal">False</span>,<br>    direction=<span class="hljs-string">&quot;clockwise&quot;</span>, rotation=<span class="hljs-number">0</span>,   <span class="hljs-comment"># 让扇区顺序与右侧图例一致</span><br>    marker=&#123;<span class="hljs-string">&quot;colors&quot;</span>: colors, <span class="hljs-string">&quot;line&quot;</span>: &#123;<span class="hljs-string">&quot;color&quot;</span>: theme[<span class="hljs-string">&quot;surface&quot;</span>], <span class="hljs-string">&quot;width&quot;</span>: <span class="hljs-number">2</span>&#125;&#125;,<br>)<br></code></pre></td></tr></table></figure>
 
 <p>顺带一提，扇区之间用的是<strong>背景色 2px 缝隙</strong>，不是描边——描边会多出一圈”不是数据”的墨水。</p>
-<h3 id="雷达图有两个坑"><a href="#雷达图有两个坑" class="headerlink" title="雷达图有两个坑"></a>雷达图有两个坑</h3><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/09-radar.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="雷达图有两个坑"><a href="#雷达图有两个坑" class="headerlink" title="雷达图有两个坑"></a>雷达图有两个坑</h3><p><img src="/09-radar.png" srcset="/img/loading.gif" lazyload></p>
 <p><strong>坑一：序列数上限。</strong> 雷达图属于”任意两个标记都可能相邻”的形式，颜色两两之间都要能分辨。我用的这套色板在”任意配对”这个更严的测试下，只有前 3 个色位能全部通过——所以雷达图最多同时对比 3 个品类。</p>
 <p><strong>坑二：归一化的基准。</strong> 一开始我是按”被选中的那几个品类”做 min-max 归一化的，结果每换一组对比对象，同一个品类的形状就变了；而且被选中的三项里<strong>必然有一项是 0 分</strong>，图形退化成一根刺。改成以”当前窗口内的全部品类”为基准，并把值域映射到 10~100（最低者不塌到圆心），图形才真正可比：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 以全量最小值作为 0 分起点，最高者 100 分</span><br>out[label] = (s - lo) / (hi - lo) * <span class="hljs-number">90</span> + <span class="hljs-number">10</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="热力图：长尾数据得封顶"><a href="#热力图：长尾数据得封顶" class="headerlink" title="热力图：长尾数据得封顶"></a>热力图：长尾数据得封顶</h3><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/03-trend.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="热力图：长尾数据得封顶"><a href="#热力图：长尾数据得封顶" class="headerlink" title="热力图：长尾数据得封顶"></a>热力图：长尾数据得封顶</h3><p><img src="/03-trend.png" srcset="/img/loading.gif" lazyload></p>
 <p>地区 × 品类销售额是典型的长尾分布——“华东 × 数码家电”一格把量程拉满，其余全挤在色阶最浅的一头，整张图几乎一个颜色。解决办法是把色阶上端截到 88 分位：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">zmax = <span class="hljs-built_in">float</span>(np.percentile(z, cap_percentile))   <span class="hljs-comment"># 默认 88 分位</span><br>fig.add_heatmap(z=z, colorscale=..., zmin=<span class="hljs-number">0</span>, zmax=zmax, xgap=<span class="hljs-number">2</span>, ygap=<span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
 
@@ -520,7 +520,7 @@
 <h2 id="五、交互：筛选联动-秒级实时"><a href="#五、交互：筛选联动-秒级实时" class="headerlink" title="五、交互：筛选联动 + 秒级实时"></a>五、交互：筛选联动 + 秒级实时</h2><h3 id="点击钻取"><a href="#点击钻取" class="headerlink" title="点击钻取"></a>点击钻取</h3><p>维度区的品类条形图可以点：点某一根条，右边的环形图切换成该品类的渠道结构，商品排行、明细表、雷达图同步过滤。用的是 Plotly 的 <code>on_select</code> 回调，把点击落到 session state，不做全页重绘：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">event = st.plotly_chart(<br>    C.category_bar(category_summary(cur), theme, selected=drill),<br>    width=<span class="hljs-string">&quot;stretch&quot;</span>, theme=<span class="hljs-literal">None</span>, config=C.PLOTLY_CONFIG,<br>    key=<span class="hljs-string">&quot;chart_category&quot;</span>, on_select=<span class="hljs-string">&quot;rerun&quot;</span>, selection_mode=<span class="hljs-string">&quot;points&quot;</span>,<br>)<br>pts = (event <span class="hljs-keyword">or</span> &#123;&#125;).get(<span class="hljs-string">&quot;selection&quot;</span>, &#123;&#125;).get(<span class="hljs-string">&quot;points&quot;</span>, [])<br><span class="hljs-keyword">if</span> pts <span class="hljs-keyword">and</span> pts[<span class="hljs-number">0</span>].get(<span class="hljs-string">&quot;y&quot;</span>) <span class="hljs-keyword">in</span> CATEGORY_ORDER:<br>    st.session_state[<span class="hljs-string">&quot;drill&quot;</span>] = pts[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;y&quot;</span>]<br></code></pre></td></tr></table></figure>
 
-<h3 id="实时监控：只重绘一块，不整页刷新"><a href="#实时监控：只重绘一块，不整页刷新" class="headerlink" title="实时监控：只重绘一块，不整页刷新"></a>实时监控：只重绘一块，不整页刷新</h3><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/06-realtime.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="实时监控：只重绘一块，不整页刷新"><a href="#实时监控：只重绘一块，不整页刷新" class="headerlink" title="实时监控：只重绘一块，不整页刷新"></a>实时监控：只重绘一块，不整页刷新</h3><p><img src="/06-realtime.png" srcset="/img/loading.gif" lazyload></p>
 <p>秒级刷新最容易犯的错是 <code>st.rerun()</code> 整页重跑——图表会闪、筛选状态会跳。Streamlit 的 <code>st.fragment(run_every=...)</code> 可以只重跑指定区域：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@st.fragment(<span class="hljs-params">run_every=interval</span>)      </span><span class="hljs-comment"># interval = 2/5/10/30 秒</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">panel</span>() -&gt; <span class="hljs-literal">None</span>:<br>    incoming = make_live_orders(n_new)<br>    buf = pd.concat([st.session_state[<span class="hljs-string">&quot;live&quot;</span>], incoming], ignore_index=<span class="hljs-literal">True</span>).tail(<span class="hljs-number">600</span>)<br>    st.session_state[<span class="hljs-string">&quot;live&quot;</span>] = buf<br>    <span class="hljs-comment"># 只渲染实时指标卡 + 累计折线 + 最新订单流水</span><br></code></pre></td></tr></table></figure>
 
@@ -551,13 +551,13 @@
 <h3 id="第二层：眼睛验证"><a href="#第二层：眼睛验证" class="headerlink" title="第二层：眼睛验证"></a>第二层：眼睛验证</h3><p>自检能保证不报错，但保证不了”好不好看”。所以我用 DevTools 协议驱动本机 Chrome 截图——<strong>先等页面真的渲染完（websocket 数据回来、Plotly 画完）再按快门</strong>，不会拍到骨架屏。相比 <code>chrome --screenshot</code>，这一步等待是必须的。</p>
 <p>视觉验证也确实抓到了问题：KPI 卡片因为塞了口径说明文字被撑成两行高、整排高矮不齐；”自定义”时间范围选项被挤得看不见；手机端侧边栏盖住整屏。这些都是”能跑但不好看&#x2F;不好用”的问题，功能测试永远发现不了。</p>
 <hr>
-<h2 id="八、双主题与多端"><a href="#八、双主题与多端" class="headerlink" title="八、双主题与多端"></a>八、双主题与多端</h2><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/07-light.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="八、双主题与多端"><a href="#八、双主题与多端" class="headerlink" title="八、双主题与多端"></a>八、双主题与多端</h2><p><img src="/07-light.png" srcset="/img/loading.gif" lazyload></p>
 <p>亮色模式不是简单反相——两套色阶分别取值、分别校验，图表颜色也跟着切换（热力图的色阶方向在深色下<strong>要翻过来</strong>：深色背景上”浅色 &#x3D; 接近 0”这个约定不成立）。</p>
-<p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/08-mobile.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/08-mobile.png" srcset="/img/loading.gif" lazyload></p>
 <p>手机上做了三档响应式断点，窄屏下指标卡和进度仪表都竖排，侧边栏设为 <code>auto</code> 自动收起（之前写死 <code>expanded</code>，430px 下侧边栏会盖住整屏）。</p>
 <p><strong>但这里要如实说一句</strong>：这本质上是个宽屏看板，手机上四区内容拉成一长条，得滚十几屏，属于”能用但不好用”。真要移动端体验好，得另做一个精简版页面（只留指标卡 + 趋势图 + 预警），而不是靠响应式硬撑。</p>
 <hr>
-<h2 id="九、成果与不足"><a href="#九、成果与不足" class="headerlink" title="九、成果与不足"></a>九、成果与不足</h2><p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/04-advanced.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="九、成果与不足"><a href="#九、成果与不足" class="headerlink" title="九、成果与不足"></a>九、成果与不足</h2><p><img src="/04-advanced.png" srcset="/img/loading.gif" lazyload></p>
 <p>最终交付的东西：</p>
 <ul>
 <li><strong>看板</strong>：<code>app.py</code> + <code>src/</code> 8 个模块，四区布局 + 全局筛选 + 点击钻取 + 秒级实时 + 可调阈值预警 + 双主题</li>
@@ -567,9 +567,9 @@
 <li><strong>一键报告</strong>：生成的 HTML 内含可交互图表，可以独立打开</li>
 </ul>
 <p>单张图表导出后是这样的（补了标题、留足了坐标轴标签的空间）：</p>
-<p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/10-trend-chart.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/10-trend-chart.png" srcset="/img/loading.gif" lazyload></p>
 <p>看板内的明细区则给每张图都配了等价的表格视图——<strong>颜色和图形之外，永远有一条能读到原始数字的路</strong>：</p>
-<p><img src="/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/05-detail.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/05-detail.png" srcset="/img/loading.gif" lazyload></p>
 <p><strong>还不足的地方：</strong></p>
 <ol>
 <li>移动端只是”能用”，没到”好用”（上面说过）</li>
