@@ -41,8 +41,6 @@
     
     <tags>
       
-      <tag>Python</tag>
-      
       <tag>数据可视化</tag>
       
       <tag>Streamlit</tag>
@@ -50,6 +48,8 @@
       <tag>Plotly</tag>
       
       <tag>Pandas</tag>
+      
+      <tag>Python</tag>
       
     </tags>
     
