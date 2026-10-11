@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>Python Vibe Coding 实验一：Excel 报表 + FastAPI 记账接口</title>
+    <link href="/2026/10/11/Python-Vibe-Coding-lab1/"/>
+    <url>/2026/10/11/Python-Vibe-Coding-lab1/</url>
+    
+    <content type="html"><![CDATA[<p>这次实验要求用 AI 编码工具完成两个任务：一个 Excel 报表生成脚本（必做），一个 FastAPI 记账接口。限制 60 分钟，可以随便用 AI 和查资料，但<strong>必须保留 AI 对话记录和代码修改轨迹</strong>。</p><p>评分表里最扎眼的一句是：<strong>“仅『让 AI 生成、跑通就交』按初级用法处理，过程分上限受限。”</strong></p><p>所以这篇博客不打算写”我怎么让 AI 帮我写了 1000 行代码”——那部分确实很快。我想写的是另一件事：<strong>怎么确认 AI 写出来的东西是对的</strong>。</p><hr><h2 id="一、先别急着让-AI-写代码"><a href="#一、先别急着让-AI-写代码" class="headerlink" title="一、先别急着让 AI 写代码"></a>一、先别急着让 AI 写代码</h2><p>我读题之后做的第一件事不是打开 Cursor，是问了三个问题，把答案写进了一张清单：</p><table><thead><tr><th>问题</th><th>结论</th></tr></thead><tbody><tr><td>两道题都做吗？</td><td>都做，共用一套工程</td></tr><tr><td>考题二用什么存储？</td><td>SQLite（不是内存 dict）</td></tr><tr><td>样例数据从哪来？</td><td>写脚本生成含脏数据的</td></tr></tbody></table><p>这三个问题看起来很小，但它们直接决定了后面代码长什么样。特别是第二个——如果选”内存 + 一把锁”，验收标准里那条「并发写入不产生数据错误」就只剩一段说辞；选 SQLite，它能变成<strong>一个跑得起来、断言得住量的测试</strong>。</p><p>我还在清单里专门写了一节「明确不做的部分」：不引入 ORM、不做前端、不做鉴权、不做 Excel 样式美化。AI 很爱顺手多加点东西，先把边界画出来比事后删代码省事。</p><p>项目结构长这样：</p><img src="/2026/10/11/Python-Vibe-Coding-lab1/01-project-structure.png" class="" title="项目结构"><hr><h2 id="二、考题一：清洗与报表"><a href="#二、考题一：清洗与报表" class="headerlink" title="二、考题一：清洗与报表"></a>二、考题一：清洗与报表</h2><h3 id="数据脏在哪"><a href="#数据脏在哪" class="headerlink" title="数据脏在哪"></a>数据脏在哪</h3><p>样例数据是我自己生成的（固定随机种子，谁跑都一样），141 行里塞了四类脏东西：</p><ul><li>8 行关键字段空值</li><li>2 行日期写成 <code>&quot;待定&quot;</code> &#x2F; <code>&quot;2026-13-45&quot;</code></li><li>6 行数量 ≤ 0</li><li>5 行整行重复</li></ul><p>清洗规则题目给定了三条，顺序不能乱，因为顺序会影响口径：</p><ol><li>删除关键字段缺失的行</li><li>剔除数量 ≤ 0 的行</li><li>按全字段去重</li></ol><p>这里有个题目没定义的点：<strong>“关键字段”是哪几个？</strong> 我的判断是 6 个业务字段全算——因为四张输出表都要用到这 6 个字段，任一缺失这行就进不了任何统计口径。</p><p>还有一个口径问题：日期解析不出来，算”缺失”还是算新一类异常？我选择<strong>归到缺失</strong>。理由是题目只给了三条规则，硬加第四条会让清洗漏斗的计数和需求对不上。但我在漏斗里保留了一个诊断子项「其中：日期无法解析」，看得见但不多扣。</p><h3 id="金额用什么算"><a href="#金额用什么算" class="headerlink" title="金额用什么算"></a>金额用什么算</h3><p>这是我花最多时间纠结的一个决定。</p><p>用 <code>float</code> 写，代码更短、跑得更快，结果也”差不多对”。但验收标准写着「统计数值与人工核对一致」——<strong>“差不多对”在钱上是不能接受的</strong>。</p><p>最后选的是：<code>Decimal</code> 计算 + <code>ROUND_HALF_UP</code> + 内部按「分」存。</p><p>顺带说，<code>ROUND_HALF_UP</code> 不是 Python 内置 <code>round()</code> 的行为：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">round</span>(<span class="hljs-number">30.015</span>, <span class="hljs-number">2</span>)          <span class="hljs-comment"># 30.01  ← 银行家舍入</span><br>Decimal(<span class="hljs-string">&quot;30.015&quot;</span>).quantize(Decimal(<span class="hljs-string">&quot;0.01&quot;</span>), rounding=ROUND_HALF_UP)  <span class="hljs-comment"># 30.02  ← 财务口径</span><br></code></pre></td></tr></table></figure><p>我在测试里专门钉了一条用例守住这个差异。</p><h3 id="跑出来的结果"><a href="#跑出来的结果" class="headerlink" title="跑出来的结果"></a>跑出来的结果</h3><img src="/2026/10/11/Python-Vibe-Coding-lab1/03-run-report.png" class="" title="一键生成报表"><p>漏斗 141 → 120，每一项都能手算验证。三张汇总表分别是：</p><img src="/2026/10/11/Python-Vibe-Coding-lab1/04a-report-by-salesman.png" class="" title="按销售员"><img src="/2026/10/11/Python-Vibe-Coding-lab1/04b-report-by-region.png" class="" title="按地区"><p>总览表把清洗漏斗和统计结果放在一起，方便一眼核对：</p><img src="/2026/10/11/Python-Vibe-Coding-lab1/05-report-overview.png" class="" title="总览"><p>清洗漏斗的可视化版本：</p><img src="/2026/10/11/Python-Vibe-Coding-lab1/02-clean-funnel.png" class="" title="清洗漏斗"><p>四张表的销售额合计都是 <strong>1,404,402.10</strong>，互相自洽。</p><h3 id="坏输入不能崩"><a href="#坏输入不能崩" class="headerlink" title="坏输入不能崩"></a>坏输入不能崩</h3><p>验收标准要求「异常输入不崩溃且有可读提示」。我把四类坏输入都跑了一遍：</p><img src="/2026/10/11/Python-Vibe-Coding-lab1/08-error-handling.png" class="" title="异常输入提示"><p>这里有个细节我比较得意：<strong>失败时不留下半截输出文件</strong>。做法是先写 <code>.tmp</code> 再 <code>os.replace()</code> 原子替换，测试里专门断言了失败后目录里没有残留。</p><p>另外题目明确要求「不得修改原始文件」，这种约束最容易写在 README 里然后被忘记。我做成了运行时硬检查——读写前后各取一次 <code>(size, mtime_ns)</code> 指纹，不一致就直接报错。</p><hr><h2 id="三、考题二：FastAPI-记账接口"><a href="#三、考题二：FastAPI-记账接口" class="headerlink" title="三、考题二：FastAPI 记账接口"></a>三、考题二：FastAPI 记账接口</h2><h3 id="并发这块怎么保证"><a href="#并发这块怎么保证" class="headerlink" title="并发这块怎么保证"></a>并发这块怎么保证</h3><p>验收标准说「并发写入不产生数据错误（<strong>能说明如何保证即可</strong>）」。既然只要说明就行，那我干脆做成能跑的测试。四道防线：</p><ol><li><code>PRAGMA journal_mode=WAL</code> —— 读写互不阻塞</li><li><code>PRAGMA busy_timeout=5000</code> —— 抢锁时等待，而不是直接抛 <code>database is locked</code></li><li>写操作走 <code>BEGIN IMMEDIATE</code> —— 入口处就拿写锁，避免”读→写”升级锁造成死锁</li><li>DB 层 <code>CHECK</code> 约束 —— 就算绕过应用层直接写 SQL，脏数据也进不去</li></ol><p>验证方式是 8 线程 × 25 笔并发写，用 <code>threading.Barrier</code> 让所有线程尽可能同时抢锁，断言零异常、行数精确 200、金额精确 246.00。</p><h3 id="金额超过-2-位小数怎么办"><a href="#金额超过-2-位小数怎么办" class="headerlink" title="金额超过 2 位小数怎么办"></a>金额超过 2 位小数怎么办</h3><p>这是一个我主动做的、和 AI 默认行为不一样的判断。</p><p>AI 生成的代码很可能会<strong>静默四舍五入</strong>——收到 <code>1.005</code> 就存成 <code>1.01</code>。我改成了直接返回 422：</p><blockquote><p>记账系统里悄悄改用户填的数字，比报错危险得多。</p></blockquote><p>接口统一用一套错误信封，覆盖 201 &#x2F; 400 &#x2F; 404 &#x2F; 422 四类状态码：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;error&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;VALIDATION_ERROR&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;请求参数校验失败&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;details&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;field&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;body.amount&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;reason&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Input should be greater than 0&quot;</span><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">]</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure><p>真实服务（不是 TestClient）的 25 项 HTTP 冒烟：</p><img src="/2026/10/11/Python-Vibe-Coding-lab1/09-api-smoke.png" class="" title="API冒烟"><hr><h2 id="四、AI-翻车的三个现场"><a href="#四、AI-翻车的三个现场" class="headerlink" title="四、AI 翻车的三个现场"></a>四、AI 翻车的三个现场</h2><p>这部分我觉得比”成功经验”更值得写。</p><h3 id="翻车-1：所有接口都返回-422"><a href="#翻车-1：所有接口都返回-422" class="headerlink" title="翻车 1：所有接口都返回 422"></a>翻车 1：所有接口都返回 422</h3><p>写完路由第一次冒烟，全部接口 422，报错字段是 <code>query.repo</code>——一个本该是依赖注入的参数。</p><p>根因是 <code>app/main.py</code> 顶部的 <code>from __future__ import annotations</code>。它把所有注解变成字符串，FastAPI 求值注解时用的是<strong>模块全局命名空间</strong>，而我的依赖定义在 <code>create_app()</code> 闭包里，解析不到，就退化成了普通类型注解 → 被当成查询参数。</p><figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs diff"><span class="hljs-deletion">- from __future__ import annotations</span><br><span class="hljs-addition">+ # 不用它：注解会变字符串，FastAPI 在模块全局里找不到闭包内的依赖</span><br></code></pre></td></tr></table></figure><p><strong>能快速定位的原因是</strong>：写完路由立刻冒烟，而不是等两个模块都写完再一起跑。</p><h3 id="翻车-2：冒烟脚本第二次跑就挂"><a href="#翻车-2：冒烟脚本第二次跑就挂" class="headerlink" title="翻车 2：冒烟脚本第二次跑就挂"></a>翻车 2：冒烟脚本第二次跑就挂</h3><p>25 项里 8 项失败。因为脚本断言的是”空库 + 两次写入”后的精确数字，而 SQLite 是持久化的，上一轮数据还在。</p><p>修法不是改断言，是在入口直接拦住并说清楚：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">[中止] 目标库已有 2 条记录，本脚本需要在空库上运行。<br>       请先停掉服务、删掉 data/ledger.db（含 -wal/-shm），再重新启动。<br></code></pre></td></tr></table></figure><h3 id="翻车-3：样例数据的脏行会叠加"><a href="#翻车-3：样例数据的脏行会叠加" class="headerlink" title="翻车 3：样例数据的脏行会叠加"></a>翻车 3：样例数据的脏行会叠加</h3><p>写生成脚本时，脏数据是从全量行里随机取的，结果一行可能<strong>既缺销售员又数量≤0</strong>。这样清洗漏斗的计数就不再是确定的，测试没法断言。</p><p>改成所有脏数据一律从「干净行」派生，保证每条脏数据只触发一条清洗规则。改完漏斗变成可预测的 <code>141 = 10 + 6 + 5 + 120</code>，测试直接断言。</p><p><strong>三个 bug 都不是靠”再读一遍代码”发现的，是靠跑发现的。</strong></p><hr><h2 id="五、怎么确认”它真的对”"><a href="#五、怎么确认”它真的对”" class="headerlink" title="五、怎么确认”它真的对”"></a>五、怎么确认”它真的对”</h2><p>这是整次实验里我花时间最多的部分。</p><h3 id="问题一：74-个测试一次全绿，这件事本身可疑"><a href="#问题一：74-个测试一次全绿，这件事本身可疑" class="headerlink" title="问题一：74 个测试一次全绿，这件事本身可疑"></a>问题一：74 个测试一次全绿，这件事本身可疑</h3><p>测试全绿不代表测试有效——很可能有一批测试根本没断言到东西。所以我做了两件事。</p><p><strong>第一件：写一个独立核对脚本。</strong></p><p>它刻意<strong>不复用被测代码的任何一行</strong>：</p><ul><li>读原始表：openpyxl 直接读单元格（被测代码走的是 pandas）</li><li>清洗：重新实现一遍三条规则</li><li>金额：重新实现一遍 Decimal 累加</li><li>再与 <code>report.xlsx</code> 逐项比对</li></ul><img src="/2026/10/11/Python-Vibe-Coding-lab1/07-verify-report.png" class="" title="独立核对"><p>23 项全部一致才返回 0。如果只用被测代码的输出做断言，代码错了一致的错，测试照样全绿。</p><p><strong>第二件：变异测试。</strong></p><p>故意把实现改坏，看测试红不红：</p><img src="/2026/10/11/Python-Vibe-Coding-lab1/10-mutation-test.png" class="" title="变异测试"><p>三处变异分别被 6 &#x2F; 8 &#x2F; 9 个测试抓到，还原后复跑 74 全绿。</p><p>这里还有个反例值得记：我第一次变异是把 <code>ROUND_HALF_UP</code> 改成 <code>ROUND_HALF_EVEN</code>，测试确实红了，但红在 <code>NameError</code> 上——<strong>根本没走到断言</strong>。这种”红了但没测到”和”绿了但没测到”一样危险，所以我换成真正改变行为的变异重做了一遍。</p><h3 id="问题二：TestClient-跑通-≠-服务真的能起"><a href="#问题二：TestClient-跑通-≠-服务真的能起" class="headerlink" title="问题二：TestClient 跑通 ≠ 服务真的能起"></a>问题二：TestClient 跑通 ≠ 服务真的能起</h3><img src="/2026/10/11/Python-Vibe-Coding-lab1/06-pytest.png" class="" title="pytest"><p>所以除了 pytest，我还起了真实的 uvicorn 用 HTTP 打了一遍（就是前面那张冒烟图）。</p><hr><h2 id="六、复盘"><a href="#六、复盘" class="headerlink" title="六、复盘"></a>六、复盘</h2><p><strong>交给 AI 的</strong>：清洗与聚合的骨架、74 个测试里的大量参数化边界、FastAPI 样板、文档。这些量大、模式固定、且正确性可以事后独立验证。</p><p><strong>自己拍板的</strong>：存储与并发方案、金额精度、校验的松紧、关键字段范围、日期解析方式、以及”不做什么”的边界。这些一旦选错，后面全部要返工，而且错了不容易被发现。</p><p><strong>人工审查的风险点</strong>：</p><table><thead><tr><th>风险</th><th>处理</th></tr></thead><tbody><tr><td>误改原始文件</td><td>运行时指纹检查 + 测试守住</td></tr><tr><td>写出半截报表</td><td>临时文件 + 原子替换</td></tr><tr><td>SQL 注入</td><td>全部参数绑定，SQL 集中审查</td></tr><tr><td>静默篡改金额</td><td>明确拒绝 3 位小数 + DB 层兜底</td></tr><tr><td>并发”看起来对”</td><td>不满足于”能说明即可”，写成测试</td></tr><tr><td>测试自我安慰</td><td>独立核对脚本 + 变异测试</td></tr></tbody></table><p><strong>如果重来</strong>，我会先把测试骨架和手算期望值定下来再写实现。这次是边实现边补测试，中间有几处口径（比如日期解析失败算不算缺失）是写测试时才被迫想清楚的，多了一次返工。</p><hr><h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>这次实验让我对”Vibe Coding”有了一个具体的理解。</p><p>代码确实大部分是 AI 写的，速度也确实快。但真正决定这份作业质量的，不是生成速度，而是我设计了哪些<strong>验证手段</strong>：</p><ul><li>独立核对脚本，防”自己算自己”</li><li>变异测试，防”测试空跑”</li><li>真实 HTTP 冒烟，防”TestClient 假绿”</li><li>运行时指纹检查，防”误改原始文件”</li></ul><p><strong>代码是 AI 写的，但判断它对不对的标准是人定的。</strong> 我觉得这就是评分表里说的”过程可控”——不是控制 AI 怎么写，是控制自己怎么验。</p><hr><p><em>完整代码、测试与运行记录：见项目仓库。所有配图均为真实运行输出的渲染，数字未作任何手工修改。</em></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>Vibe Coding</tag>
+      
+      <tag>FastAPI</tag>
+      
+      <tag>pandas</tag>
+      
+      <tag>测试</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>实验2 数据看板的设计与实现</title>
     <link href="/2026/10/10/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/"/>
     <url>/2026/10/10/%E5%AE%9E%E9%AA%8C2-%E6%95%B0%E6%8D%AE%E7%9C%8B%E6%9D%BF%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/</url>
@@ -14,6 +41,8 @@
     
     <tags>
       
+      <tag>Python</tag>
+      
       <tag>数据可视化</tag>
       
       <tag>Streamlit</tag>
@@ -21,8 +50,6 @@
       <tag>Plotly</tag>
       
       <tag>Pandas</tag>
-      
-      <tag>Python</tag>
       
     </tags>
     
@@ -47,11 +74,11 @@
     
     <tags>
       
+      <tag>后端开发</tag>
+      
       <tag>Javaweb</tag>
       
       <tag>全栈</tag>
-      
-      <tag>后端开发</tag>
       
     </tags>
     
@@ -134,9 +161,9 @@
     
     <tags>
       
-      <tag>后端开发</tag>
-      
       <tag>Java</tag>
+      
+      <tag>后端开发</tag>
       
       <tag>IO流</tag>
       
@@ -283,11 +310,11 @@
     
     <tags>
       
-      <tag>后端开发</tag>
-      
       <tag>Java</tag>
       
       <tag>设计模式</tag>
+      
+      <tag>后端开发</tag>
       
     </tags>
     
